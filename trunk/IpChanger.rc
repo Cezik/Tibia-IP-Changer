@@ -1,0 +1,172 @@
+////////////////////////////////////////////////////////////////////////////////
+// OTFans.pl IP Changer - Developed by Czepek                                 //
+////////////////////////////////////////////////////////////////////////////////
+// This program is free software; you can redistribute it and/or              //
+// modify it under the terms of the GNU General Public License                //
+// as published by the Free Software Foundation; either version 2             //
+// of the License, or (at your option) any later version.                     //
+//                                                                            //
+// This program is distributed in the hope that it will be useful,            //
+// but WITHOUT ANY WARRANTY; without even the implied warranty of             //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              //
+// GNU General Public License for more details.                               //
+//                                                                            //
+// You should have received a copy of the GNU General Public License          //
+// along with this program; if not, write to the Free Software Foundation,    //
+// Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            //
+////////////////////////////////////////////////////////////////////////////////
+
+#include <windows.h>
+#include "resource.h"
+
+ID_ICON ICON DISCARDABLE "Icons/IpChanger.ico"
+
+ID_ICON_CLOSE BITMAP "Icons/close.bmp"
+ID_ICON_OPTIONS BITMAP "Icons/lightning.bmp"
+ID_ICON_IPLIST BITMAP "Icons/listicon.bmp"
+ID_ICON_TRAY BITMAP "Icons/world.bmp"
+ID_ICON_ADD BITMAP "Icons/add.bmp"
+ID_ICON_EDIT BITMAP "Icons/edit.bmp"
+ID_ICON_DELETE BITMAP "Icons/delete.bmp"
+ID_ICON_DELETE_ALL BITMAP "Icons/delete2.bmp"
+ID_ICON_INFORMATION BITMAP "Icons/information.bmp"
+ID_ICON_CHANGEIP BITMAP "Icons/hammer.bmp"
+
+ID_MAIN_MENU MENU DISCARDABLE
+BEGIN
+	POPUP "&Menu"
+	BEGIN
+		MENUITEM "&Lista IP", ID_MENU_IP_LIST
+		MENUITEM "&Ostatnie serwery", ID_MENU_LAST_SERVERS
+		MENUITEM SEPARATOR
+		MENUITEM "&Opcje", ID_MENU_OPTIONS
+		MENUITEM SEPARATOR
+		MENUITEM "W&yjœcie", ID_MENU_EXIT
+	END
+END
+
+ID_DLG_MAIN_GUI DIALOG DISCARDABLE  0, 0, 111, 73
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION NAME
+FONT 8, "MS Sans Serif"
+MENU ID_MAIN_MENU
+BEGIN
+	 GROUPBOX "", ID_STATIC, 2, 0, 107, 72
+	 LTEXT "IP: ", ID_STATIC, 5, 8, 9, 8
+	 PUSHBUTTON "R", ID_DLG_REFRESH_LIST, 17, 8, 9, 10
+	 COMBOBOX ID_DLG_IP, 30, 6, 75, 120, WS_VSCROLL | WS_TABSTOP | CBS_DROPDOWN | CBS_HASSTRINGS
+	 LTEXT "Port: ", ID_STATIC, 5, 25, 14, 8
+	 EDITTEXT ID_DLG_PORT, 30, 23, 75, 12, ES_NUMBER
+	 AUTOCHECKBOX "Zmieñ tytu³ Tibii", ID_DLG_CHANGE_TITLE, 5, 37, 67, 8, WS_TABSTOP
+	 PUSHBUTTON "Zmieñ IP!", ID_DLG_CHANGE_IP, 5, 47, 50, 12
+	 PUSHBUTTON "Informacje", ID_DLG_SHOW_SERVER_INFO, 57, 47, 48, 12
+	 CONTROL "<a>OTFans.pl</a>", ID_DLG_LINK, "SysLink", WS_TABSTOP | WS_EX_TRANSPARENT | SS_NOTIFY, 40, 60, 40, 8
+END
+
+ID_DLG_SERVER_INFO DIALOG DISCARDABLE  0, 0, 247, 166
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION NAME
+FONT 8, "MS Sans Serif"
+BEGIN
+	 EDITTEXT ID_DLG_SERVER, 0, 0, 247, 166, ES_MULTILINE | ES_READONLY | ES_WANTRETURN
+END
+
+ID_DLG_OPTIONS_WINDOW DIALOG DISCARDABLE  0, 0, 201, 219
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION NAME
+FONT 8, "MS Sans Serif"
+BEGIN
+	 GROUPBOX "", ID_STATIC, 0, 0, 200, 115
+	 EDITTEXT ID_DLG_RSA_EDIT, 5, 9, 190, 70, ES_MULTILINE | ES_WANTRETURN | WS_DISABLED
+	 PUSHBUTTON "Klucz dla OpenTibia", ID_DLG_RSA_DEFAULT, 3, 82, 70, 12
+	 PUSHBUTTON "Zapisz", ID_DLG_RSA_SAVE, 85, 82, 55, 12, WS_DISABLED
+	 PUSHBUTTON "Wczytaj", ID_DLG_RSA_LOAD, 147, 82, 50, 12, WS_DISABLED
+	 AUTOCHECKBOX "U¿yj innego klucza", ID_DLG_RSA_USE_OTHER, 5, 97, 72, 8, WS_TABSTOP
+	 PUSHBUTTON "U¿yj wpisanego", ID_DLG_RSA_USE_THIS_ONE, 85, 97, 55, 12, WS_DISABLED
+
+	 GROUPBOX "", ID_STATIC, 0, 115, 200, 58
+	 EDITTEXT ID_DLG_OPTIONS_EDIT_TITLE, 5, 130, 190, 12, ES_WANTRETURN | ES_AUTOHSCROLL
+	 CONTROL "<a>$protocol$</a> = Wersja klienta", ID_DLG_PROTOCOL_TXT, "SysLink", WS_TABSTOP | WS_EX_TRANSPARENT | SS_NOTIFY, 5, 145, 90, 8
+	 CONTROL "<a>$ipaddress$</a> = IP", ID_DLG_IPADDR_TXT, "SysLink", WS_TABSTOP | WS_EX_TRANSPARENT | SS_NOTIFY, 5, 153, 75, 8
+	 CONTROL "<a>$port$</a> = Port", ID_DLG_PORT_TXT, "SysLink", WS_TABSTOP | WS_EX_TRANSPARENT | SS_NOTIFY, 5, 161, 45, 8
+	 PUSHBUTTON "Zapisz", ID_DLG_TITLE_SAVE, 100, 145, 45, 12
+	 PUSHBUTTON "Wczytaj", ID_DLG_TITLE_LOAD, 150, 145, 45, 12
+
+	 GROUPBOX "", ID_STATIC, 0, 170, 200, 48
+	 AUTOCHECKBOX "Poka¿ okno z informacj¹ po zmianie adresów", ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE, 5, 177, 153, 8, WS_TABSTOP
+	 AUTOCHECKBOX "Zmieñ nazwê Tibii", ID_DLG_OPTIONS_CHANGE_WINDOW_CMD_LINE, 5, 187, 70, 8, WS_TABSTOP
+	 AUTOCHECKBOX "Support dla OTServlist.org", ID_DLG_OPTIONS_OTSERV_SUPPORT, 5, 197, 96, 8, WS_TABSTOP
+	 AUTOCHECKBOX "Pokazuj okna z informacjami", ID_DLG_OPTIONS_SHOW_TOOLTIPS, 5, 207, 103, 8, WS_TABSTOP
+	 PUSHBUTTON "Zapisz", ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE_SAVE, 150, 200, 45, 12
+END
+
+ID_DLG_IP_LIST DIALOG DISCARDABLE  0, 0, 203, 144
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION NAME
+FONT 8, "MS Sans Serif"
+BEGIN
+	 //
+END
+
+ID_DLG_LAST_SERVERS DIALOG DISCARDABLE  0, 0, 203, 144
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION NAME
+FONT 8, "MS Sans Serif"
+BEGIN
+	 //
+END
+
+ID_DLG_ADD_SERVER DIALOG DISCARDABLE  0, 0, 160, 50
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION NAME
+FONT 8, "MS Sans Serif"
+BEGIN
+	 GROUPBOX "", ID_STATIC, 5,  2, 150,  45
+	 EDITTEXT ID_DLG_ADD_ADDRESS, 10, 10, 100,  12, ES_AUTOHSCROLL
+	 EDITTEXT ID_DLG_ADD_PORT, 110, 10,  40,  12, ES_NUMBER
+	 PUSHBUTTON "Dodaj", ID_DLG_ADD_ADD, 65, 30,  65,  12
+	 PUSHBUTTON "X", ID_DLG_ADD_CLOSE, 135, 30,  15,  12
+END
+
+ID_DLG_EDIT_SERVER DIALOG DISCARDABLE  0, 0, 160, 50
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+CAPTION NAME
+FONT 8, "MS Sans Serif"
+BEGIN
+	 GROUPBOX "", ID_STATIC, 5,  2, 150,  45
+	 EDITTEXT ID_DLG_EDIT_ADDRESS, 10, 10, 100,  12, ES_AUTOHSCROLL
+	 EDITTEXT ID_DLG_EDIT_PORT, 110, 10,  40,  12, ES_NUMBER
+	 PUSHBUTTON "Zapisz", ID_DLG_EDIT_SAVE, 65, 30,  65,  12
+	 PUSHBUTTON "X", ID_DLG_EDIT_CLOSE, 135, 30,  15,  12
+END
+
+VS_VERSION_INFO VERSIONINFO
+	FILEVERSION CURRENT_VERSION
+	PRODUCTVERSION CURRENT_VERSION
+	FILEFLAGSMASK 0x3fL
+	FILEFLAGS 0x0L
+	FILEOS 0x4L
+	FILETYPE 0x1L
+	FILESUBTYPE 0x0L
+
+	BEGIN
+		BLOCK "StringFileInfo"
+		BEGIN
+			BLOCK "041504b0"
+			BEGIN
+				VALUE "CompanyName", "OTFans.pl\0"
+				VALUE "FileDescription", "Oficjalny IP Changer serwisu OTFans.pl dla gry MMORPG 'Tibia'\0"
+				VALUE "FileVersion", CURRENT_VERSION2
+				VALUE "InternalName", "IP Changer\0"
+				VALUE "LegalCopyright", "OTFans.pl\0"
+				VALUE "LegalTrademarks", "OTFans.pl\0"
+				VALUE "OriginalFilename", "IP Changer\0"
+				VALUE "ProductName", "IP Changer\0"
+				VALUE "ProductVersion", CURRENT_VERSION2
+			END
+		END
+		BLOCK "VarFileInfo"
+		BEGIN
+			VALUE "Translation", 0x415, 1200
+		END
+	END
