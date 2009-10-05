@@ -42,7 +42,6 @@
 
 #define CONFIG_FILE "IPChanger.ini"
 #define SERVER_LIST_FILE "IPList.xml"
-#define LAST_SERVERS_FILE "LastServers.xml"
 #define ADDRESSES_FILE "Addresses.xml"
 #define LANGUAGE_FILE "Language.ini"
 #define SECTION "OTFans"
@@ -60,14 +59,6 @@ struct addressReading
 	unsigned short loginServers;
 	char* protocol;
 	bool isUsed;
-};
-
-struct lastServers
-{
-	char* ipAddress;
-	unsigned short port;
-	long time;
-	char* protocol;
 };
 
 class Tools
@@ -89,9 +80,6 @@ class Tools
 		void setChangeTitleCmdLine(bool value){changeTitleCmdLine = value;}
 		void setSupportForOTServList(bool value){supportForOTServList = value;}
 		void setShowToolTips(bool value){showToolTips = value;}
-
-		unsigned int getLastUsedServers() const {return lastUsedServer;}
-		void addToLastServers(lastServers* lServ);
 
 		bool fileExists(const char* fileName);
 
@@ -127,7 +115,6 @@ class Tools
 		bool readXMLInteger(xmlNodePtr node, const char* tag, int& value);
 
 		bool loadFromXmlIpList();
-		bool loadFromXmlLastServersList();
 		bool loadLanguageStrings(const char* fileName);
 
 		std::string getExeDir();
@@ -148,11 +135,9 @@ class Tools
 
 		bool loadFromXmlAddresses();
 		addressReading rAddr[MAX_AMOUNT_OF_PROTOCOLS];
-		lastServers lastServ[MAX_AMOUNT_OF_LAST_SERVERS];
 
 	protected:
 		bool useOtherRSA, checkFromList, showMessageBox, changeTitleCmdLine, supportForOTServList, showToolTips;
-		unsigned int lastUsedServer;
 };
 
 #endif

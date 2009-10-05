@@ -787,95 +787,6 @@ BOOL CALLBACK serverList(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return false;
 }
 
-BOOL CALLBACK lastServersList(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	switch(message)
-	{
-		case WM_INITDIALOG:
-		{
-			RECT rc;
-			GetClientRect(hwnd, &rc);
-            gui.lastServersList = gui.doCreateListView(hwnd, rc.left, rc.top, rc.right, rc.bottom);
-
-			gui.doCreateColumn(gui.lastServersList, tools.languageTable[10], 160, 0);
-			gui.doCreateColumn(gui.lastServersList, "Port", 60, 1);
-			gui.doCreateColumn(gui.lastServersList, "Status", 80, 2);
-			break;
-		}
-
-		case WM_COMMAND:
-			switch(LOWORD(wParam))
-			{
-				//
-			}
-			break;
-/*
-		case WM_NOTIFY:
-			switch(((LPNMHDR)lParam)->code)
-			{
-				case NM_RCLICK:
-				{
-					LPNMITEMACTIVATE lpnmItem = (LPNMITEMACTIVATE)lParam;
-					if(lpnmItem->iItem != -1)
-					{
-						gui.nLastItem = lpnmItem->iItem;
-						gui.nLastSubItem = lpnmItem->iSubItem;
-						gui.doShowMenu(hwnd, gui.ipListMenu);
-					}
-					else
-					{
-						gui.nLastItem = -1;
-						gui.nLastSubItem = -1;
-						gui.doShowMenu(hwnd, gui.ipListMenu2);
-					}
-					break;
-				}
-
-				case NM_DBLCLK:
-				{
-					LPNMITEMACTIVATE lpnmItem = (LPNMITEMACTIVATE)lParam;
-					if(lpnmItem->iItem != -1)
-					{
-						gui.nLastItem = lpnmItem->iItem;
-						gui.nLastSubItem = lpnmItem->iSubItem;
-						DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_EDIT_SERVER), HWND_DESKTOP, EditServerProc);
-					}
-					else
-					{
-						gui.nLastItem = -1;
-						gui.nLastSubItem = -1;
-					}
-					break;
-				}
-
-				case NM_CLICK:
-				case NM_RDBLCLK:
-				{
-					LPNMITEMACTIVATE lpnmItem = (LPNMITEMACTIVATE)lParam;
-					if(lpnmItem->iItem != -1)
-					{
-						gui.nLastItem = lpnmItem->iItem;
-						gui.nLastSubItem = lpnmItem->iSubItem;
-					}
-					else
-					{
-						gui.nLastItem = -1;
-						gui.nLastSubItem = -1;
-					}
-					break;
-				}
-			}
-			break;
-*/
-			case WM_CLOSE:
-			case WM_DESTROY:
-			{
-				EndDialog(hwnd, 0);
-				break;
-			}
-	}
-	return false;
-}
 
 BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -983,9 +894,6 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			SetMenuItemBitmaps(gui.trayMenu, ID_MENU_EXIT, MF_BYCOMMAND, gui.hbIcons[ID_ICON_CLOSE], gui.hbIcons[ID_ICON_CLOSE]);
 
 			ModifyMenu(gui.mainMenu, ID_MENU_IP_LIST, MF_STRING, ID_MENU_IP_LIST, tools.languageTable[15]);
-			/* TODO (Czepek#1#): Add language string for last servers */
-            //ModifyMenu(gui.mainMenu, ID_MENU_LAST_SERVERS, MF_STRING, ID_MENU_LAST_SERVERS, tools.languageTable[15]);
-
 			ModifyMenu(gui.mainMenu, ID_MENU_OPTIONS, MF_STRING, ID_MENU_OPTIONS, tools.languageTable[36]);
 			ModifyMenu(gui.mainMenu, ID_MENU_EXIT, MF_STRING, ID_MENU_EXIT, tools.languageTable[14]);
 
@@ -1058,10 +966,6 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 					DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_IP_LIST), HWND_DESKTOP, serverList);
 					break;
 
-				case ID_MENU_LAST_SERVERS:
-					DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_LAST_SERVERS), HWND_DESKTOP, lastServersList);
-					break;
-
 				case ID_MENU_TRAY_HIDE:
 				{
 					if(gui.minimized)
@@ -1132,14 +1036,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 
 		if(tools.setNewConnection(tools.cmdLineIP, atoi(tools.cmdLinePort), tools.getChangeTitleCmdLine()))
 		{
-			lastServers* lServ = new lastServers;
-			strcpy(lServ->ipAddress, tools.cmdLineIP);
-			lServ->port = atoi(tools.cmdLinePort);
-			lServ->time = time(NULL);
-			strcpy(lServ->protocol, tools.languageTable[4]);
-			tools.addToLastServers(lServ);
-			delete lServ;
-            if(tools.getShowMessageBox())
+			if(tools.getShowMessageBox())
 			{
 				gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[37], tools.cmdLineIP, tools.cmdLinePort);
 			}
@@ -1163,13 +1060,6 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 		{
 			if(tools.setNewConnection(pIp, atoi(pPort), tools.getChangeTitleCmdLine()))
 			{
-				lastServers* lServ = new lastServers;
-				strcpy(lServ->ipAddress, pIp);
-				lServ->port = atoi(pPort);
-				lServ->time = time(NULL);
-				strcpy(lServ->protocol, pClient);
-				tools.addToLastServers(lServ);
-				delete lServ;
 				if(tools.getShowMessageBox())
 					gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[40], pIp, pPort, pClient);
 			}
