@@ -41,9 +41,7 @@ Tools::~Tools()
 /// </summary>
 bool Tools::fileExists(const char* fileName)
 {
-	char filePath[MAX_PATH];
-	sprintf(filePath, "%s\%s", getExeDir().c_str(), fileName);
-	std::ifstream file(filePath);
+	std::ifstream file(getFilePath(fileName).c_str());
 	if(!file.fail())
 		return true;
 	return false;
@@ -54,9 +52,7 @@ bool Tools::fileExists(const char* fileName)
 /// </summary>
 long Tools::readInteger(const char* key)
 {
-	char filePath[MAX_PATH], buffer[MAX_PATH];
-	sprintf(filePath, "%s\%s", getExeDir().c_str(), CONFIG_FILE);
-	return GetPrivateProfileInt(SECTION, key, -1, filePath);
+	return GetPrivateProfileInt(SECTION, key, -1, getFilePath(CONFIG_FILE).c_str());
 }
 
 /// <summary>
@@ -64,9 +60,8 @@ long Tools::readInteger(const char* key)
 /// </summary>
 std::string Tools::readString(const char* key)
 {
-	char filePath[MAX_PATH], buffer[MAX_PATH];
-	sprintf(filePath, "%s\%s", getExeDir().c_str(), CONFIG_FILE);
-	GetPrivateProfileString(SECTION, key, "", buffer, sizeof(buffer), filePath);
+	char buffer[MAX_PATH];
+	GetPrivateProfileString(SECTION, key, "", buffer, sizeof(buffer), getFilePath(CONFIG_FILE).c_str());
 	return buffer;
 }
 
@@ -75,9 +70,8 @@ std::string Tools::readString(const char* key)
 /// </summary>
 std::string Tools::readStringFromFile(const char* fileName, const char* section, const char* key)
 {
-	char filePath[MAX_PATH], buffer[MAX_PATH];
-	sprintf(filePath, "%s\%s", getExeDir().c_str(), fileName);
-	GetPrivateProfileString(section, key, "", buffer, sizeof(buffer), filePath);
+	char buffer[MAX_PATH];
+	GetPrivateProfileString(section, key, "", buffer, sizeof(buffer), getFilePath(fileName).c_str());
 	return buffer;
 }
 
@@ -485,14 +479,14 @@ bool Tools::setNewConnection(const char* newIP, unsigned short newPort, bool cha
 			return false;
 
 		char* clientVersion;
-		clientVersion = new char[getClientVersion(procHandle).size()];
+        clientVersion = new char[getClientVersion(procHandle).size()];
 		strcpy(clientVersion, getClientVersion(procHandle).c_str());
 
 		for(int i = 0; i <= MAX_AMOUNT_OF_PROTOCOLS; i++)
 		{
 			if(strcmp(clientVersion, rAddr[i].protocol) == 0)
 			{
-				if(rAddr[i].isUsed)
+    	        if(rAddr[i].isUsed)
 				{
 					if(rAddr[i].rsaAddr != 0)
 					{
@@ -595,7 +589,7 @@ bool Tools::loadFromXmlIpList()
 		IpListPort[i].clear();
 	}
 
-	xmlDocPtr doc = xmlParseFile(SERVER_LIST_FILE);
+    xmlDocPtr doc = xmlParseFile(getFilePath(SERVER_LIST_FILE).c_str());
 	if(!doc)
 		return false;
 	xmlNodePtr root, p;
@@ -663,14 +657,21 @@ std::string Tools::getExeDir()
 }
 
 /// <summary>
+/// Returns a path where is *.exe file with file name
+/// </summary>
+std::string Tools::getFilePath(const char* fileName)
+{
+	char filePath[MAX_PATH];
+	sprintf(filePath, "%s/%s", getExeDir().c_str(), fileName);
+	return filePath;
+}
+
+/// <summary>
 /// Loads Tibia addresses from *.xml file
 /// </summary>
 bool Tools::loadFromXmlAddresses()
 {
-	char filePath[MAX_PATH];
-	sprintf(filePath, "%s\%s", getExeDir().c_str(), ADDRESSES_FILE);
-	std::ifstream file(filePath);
-	xmlDocPtr doc = xmlParseFile(filePath);
+	xmlDocPtr doc = xmlParseFile(getFilePath(ADDRESSES_FILE).c_str());
 	if(!doc)
 		return false;
 	xmlNodePtr root, p;

@@ -82,6 +82,7 @@ class Tools
 		void setShowToolTips(bool value){showToolTips = value;}
 
 		bool fileExists(const char* fileName);
+		std::string getFilePath(const char* fileName);
 
 		long readInteger(const char* key);
 		std::string readString(const char* key);
