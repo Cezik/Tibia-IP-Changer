@@ -48,7 +48,7 @@ bool saveServerList()
 		xmlAddChild(root, listNode);
 	}
 
-	if(xmlSaveFile(SERVER_LIST_FILE, doc))
+    if(xmlSaveFile(tools.getFilePath(SERVER_LIST_FILE).c_str(), doc))
 	{
 		xmlFreeDoc(doc);
 		return true;
@@ -863,7 +863,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 				int nCount = ListView_GetItemCount(gui.hWndIpList);
 				for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
 				{
-					if(tools.IpListAddr[i] != "")
+					if(!tools.IpListAddr[i].empty())
 					{
 						SendDlgItemMessage(hWnd, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)tools.IpListAddr[i].c_str());
 					}
@@ -917,7 +917,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 					{
 						for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
 						{
-							if(tools.IpListAddr[i] != "")
+							if(!tools.IpListAddr[i].empty())
 							{
 								SendDlgItemMessage(hWnd, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)tools.IpListAddr[i].c_str());
 							}
@@ -938,7 +938,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 						if(newPort == 0)
 							newPort = 7171;
 
-						if(HIWORD(wParam) == BN_CLICKED)
+                        if(HIWORD(wParam) == BN_CLICKED)
 						{
 							if(SendDlgItemMessage(hWnd, ID_DLG_CHANGE_TITLE, BM_GETCHECK, 0, 0))
 							{
