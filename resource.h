@@ -19,8 +19,8 @@
 #define TTM_SETTITLE (WM_USER + 32)
 
 #define NAME "IP Changer"
-#define CURRENT_VERSION  1,0,8,3
-#define CURRENT_VERSION2 "1.0.8.3\0"
+#define CURRENT_VERSION  1,0,8,32
+#define CURRENT_VERSION2 "1.0.8.32\0"
 
 #define ID_STATIC -1
 
