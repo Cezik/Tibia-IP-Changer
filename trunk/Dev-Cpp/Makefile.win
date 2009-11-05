@@ -11,8 +11,8 @@ LIBS =  -L"lib" -mwindows -lcomctl32 -lversion -lpsapi -lwsock32 -lshlwapi -lxml
 INCS =  -I"include" 
 CXXINCS =  -I"include" 
 BIN  = IPChanger.exe
-CXXFLAGS = $(CXXINCS)   -fexpensive-optimizations -O3
-CFLAGS = $(INCS)   -fexpensive-optimizations -O3
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
 RM = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
