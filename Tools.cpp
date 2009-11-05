@@ -693,7 +693,6 @@ bool Tools::loadFromXmlAddresses()
 		std::string strVal;
 		int intVal;
 		char buffer[255];
-		FILE* file = fopen("Addr.txt", "w+");
         if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
 		{
 			if(readXMLString(p, "rsaAddr", strVal))
