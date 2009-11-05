@@ -48,7 +48,7 @@ bool saveServerList()
 		xmlAddChild(root, listNode);
 	}
 
-    if(xmlSaveFile(tools.getFilePath(SERVER_LIST_FILE).c_str(), doc))
+	if(xmlSaveFile(tools.getFilePath(SERVER_LIST_FILE).c_str(), doc))
 	{
 		xmlFreeDoc(doc);
 		return true;
@@ -335,8 +335,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_TOOLTIPS, WM_SETTEXT, 0, (LPARAM)tools.languageTable[70]);
 			SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE_SAVE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[60]);
 			SendDlgItemMessage(gui.optionsWindow, ID_DLG_PROTOCOL_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[65]);
-			SendDlgItemMessage(gui.optionsWindow, ID_DLG_IPADDR_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[65]);
-			SendDlgItemMessage(gui.optionsWindow, ID_DLG_PROTOCOL_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[64]);
+			SendDlgItemMessage(gui.optionsWindow, ID_DLG_IPADDR_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[64]);
 			SendDlgItemMessage(gui.optionsWindow, ID_DLG_PORT_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[56]);
 			break;
 		}
@@ -351,12 +350,11 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				case ID_DLG_RSA_SAVE:
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_RSA_USE_OTHER, BM_GETCHECK, 0, 0))
 					{
-						char fileLocation[25];
-						std::string saveRsaKey;
-						GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, (char*)saveRsaKey.c_str(), saveRsaKey.size());
-						sprintf(fileLocation, "./%s", CONFIG_FILE);
+						char saveRsaKey[MAX_PATH];
+						GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, saveRsaKey, sizeof(saveRsaKey));
+
 						tools.rsaKey = saveRsaKey;
-						WritePrivateProfileString(SECTION, "KeyRSA", saveRsaKey.c_str(), fileLocation);
+						WritePrivateProfileString(SECTION, "KeyRSA", saveRsaKey, tools.getFilePath(CONFIG_FILE).c_str());
 					}
 					break;
 
@@ -373,8 +371,8 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 				case ID_DLG_RSA_USE_THIS_ONE:
 				{
-					std::string saveRsaKey;
-					GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, (char*)saveRsaKey.c_str(), saveRsaKey.size());
+					char saveRsaKey[MAX_PATH];
+					GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, saveRsaKey, sizeof(saveRsaKey));
 					tools.rsaKey = saveRsaKey;
 					break;
 				}
@@ -413,60 +411,57 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 				case ID_DLG_TITLE_SAVE:
 				{
-					char saveTibiaTitle[MAX_PATH], fileLocation[MAX_PATH];
+					char saveTibiaTitle[MAX_PATH];
 					GetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, saveTibiaTitle, sizeof(saveTibiaTitle));
-					sprintf(fileLocation, "./%s", CONFIG_FILE);
-					WritePrivateProfileString(SECTION, "CustomTibiaTitle", saveTibiaTitle, fileLocation);
+					WritePrivateProfileString(SECTION, "CustomTibiaTitle", saveTibiaTitle, tools.getFilePath(CONFIG_FILE).c_str());
 					break;
 				}
 
 				case ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE_SAVE:
 				{
-					char fileLocation[MAX_PATH];
-					sprintf(fileLocation, "./%s", CONFIG_FILE);
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE, BM_GETCHECK, 0, 0))
 					{
-						WritePrivateProfileString(SECTION, "ShowMessageBox", "1", fileLocation);
+						WritePrivateProfileString(SECTION, "ShowMessageBox", "1", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setShowMessageBox(true);
 					}
 					else
 					{
-						WritePrivateProfileString(SECTION, "ShowMessageBox", "0", fileLocation);
+						WritePrivateProfileString(SECTION, "ShowMessageBox", "0", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setShowMessageBox(false);
 					}
 
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE, BM_GETCHECK, 0, 0))
 					{
-						WritePrivateProfileString(SECTION, "ChangeTibiaTitleCmdLine", "1", fileLocation);
+						WritePrivateProfileString(SECTION, "ChangeTibiaTitleCmdLine", "1", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setChangeTitleCmdLine(true);
 					}
 					else
 					{
-						WritePrivateProfileString(SECTION, "ChangeTibiaTitleCmdLine", "0", fileLocation);
+						WritePrivateProfileString(SECTION, "ChangeTibiaTitleCmdLine", "0", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setChangeTitleCmdLine(false);
 					}
 
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_OTSERV_SUPPORT, BM_GETCHECK, 0, 0))
 					{
-						WritePrivateProfileString(SECTION, "SupportForOTServList", "1", fileLocation);
+						WritePrivateProfileString(SECTION, "SupportForOTServList", "1", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setSupportForOTServList(true);
 						tools.addSupportForOTServList();
 					}
 					else
 					{
-						WritePrivateProfileString(SECTION, "SupportForOTServList", "0", fileLocation);
+						WritePrivateProfileString(SECTION, "SupportForOTServList", "0", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setSupportForOTServList(false);
 						SHDeleteKey(HKEY_CLASSES_ROOT, "OTSERV");
 					}
 
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_TOOLTIPS, BM_GETCHECK, 0, 0))
 					{
-						WritePrivateProfileString(SECTION, "ShowToolTips", "1", fileLocation);
+						WritePrivateProfileString(SECTION, "ShowToolTips", "1", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setShowToolTips(true);
 					}
 					else
 					{
-						WritePrivateProfileString(SECTION, "ShowToolTips", "0", fileLocation);
+						WritePrivateProfileString(SECTION, "ShowToolTips", "0", tools.getFilePath(CONFIG_FILE).c_str());
 						tools.setShowToolTips(false);
 					}
 				}
@@ -570,7 +565,7 @@ BOOL CALLBACK AddServerProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 			{
 				case ID_DLG_ADD_ADD:
 				{
-					char cAddress[MAX_PATH], cPort[MAX_PATH];
+					char cAddress[MAX_PATH], cPort[10];
 					if(GetDlgItemText(hwnd, ID_DLG_ADD_ADDRESS, cAddress, sizeof(cAddress)) && GetDlgItemText(hwnd, ID_DLG_ADD_PORT, cPort, sizeof(cPort)))
 					{
 						int nRet = ListView_GetItemCount(gui.hWndIpList);
@@ -642,11 +637,11 @@ BOOL CALLBACK serverList(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if(tools.loadFromXmlIpList())
 			{
-				int nCount = ListView_GetItemCount(gui.hWndIpList);
 				for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
 				{
-					if(tools.IpListAddr[i] != "" && tools.IpListPort[i] != "")
+					if(!tools.IpListAddr[i].empty() && !tools.IpListPort[i].empty())
 					{
+						int nCount = ListView_GetItemCount(gui.hWndIpList);
 						gui.doCreateItem(gui.hWndIpList, (char*)tools.IpListAddr[i].c_str(), nCount, 0, nCount);
 						gui.doCreateItem(gui.hWndIpList, (char*)tools.IpListPort[i].c_str(), nCount, 1, nCount);
 						gui.doCreateItem(gui.hWndIpList, "?", nCount, 2, nCount);
@@ -938,7 +933,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 						if(newPort == 0)
 							newPort = 7171;
 
-                        if(HIWORD(wParam) == BN_CLICKED)
+						if(HIWORD(wParam) == BN_CLICKED)
 						{
 							if(SendDlgItemMessage(hWnd, ID_DLG_CHANGE_TITLE, BM_GETCHECK, 0, 0))
 							{

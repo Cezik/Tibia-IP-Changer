@@ -24,7 +24,9 @@ extern WinGUI gui;
 Tools::Tools()
 {
 	bSend = true;
-	bRecv = useOtherRSA = checkFromList = false;
+	bRecv = false;
+	useOtherRSA = false;
+	checkFromList = false;
 	setShowMessageBox(readBoolean("ShowMessageBox"));
 	setChangeTitleCmdLine(readBoolean("ChangeTibiaTitleCmdLine"));
 	setSupportForOTServList(readBoolean("SupportForOTServList"));
@@ -34,7 +36,7 @@ Tools::Tools()
 Tools::~Tools()
 {
 	//
-}							  
+}
 
 /// <summary>
 /// Checking that file exists
@@ -83,7 +85,8 @@ bool Tools::readBoolean(const char* key)
 	long value = readInteger(key);
 	if(value == 1)
 		return true;
-	return false;
+	else
+		return false;
 }
 
 /// <summary>
@@ -419,7 +422,7 @@ bool Tools::writeByte(HANDLE procHandle, DWORD lpBaseAddress, const int lpBuffer
 /// <summary>
 /// Changing RSA key of Tibia client
 /// </summary>
-bool Tools::setRSA(HANDLE procHandle, DWORD rsaAddr, const char newRsaKey[])
+bool Tools::setRSA(HANDLE procHandle, const DWORD rsaAddr, const char newRsaKey[])
 {
 	DWORD oldProtection, newProtection;
 	if(VirtualProtectEx(procHandle, (LPVOID)rsaAddr, strlen(newRsaKey), PAGE_EXECUTE_READWRITE, &oldProtection))
@@ -436,14 +439,15 @@ bool Tools::setRSA(HANDLE procHandle, DWORD rsaAddr, const char newRsaKey[])
 /// <summary>
 /// Changing IP of Tibia client
 /// </summary>
-bool Tools::changeIP(HANDLE procHandle, const char* newIP, DWORD loginAddress, unsigned short maxLoginServers)
+bool Tools::changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddress, unsigned short maxLoginServers)
 {
+	DWORD addr = loginAddress;
 	for(int i = 0; i < maxLoginServers; i++)
 	{
-		if(!writeString(procHandle, loginAddress, newIP))
+		if(!writeString(procHandle, addr, newIP))
 			return false;
 
-		loginAddress += IpDistance;
+		addr += IpDistance;
 	}
 	return true;
 }
@@ -451,14 +455,15 @@ bool Tools::changeIP(HANDLE procHandle, const char* newIP, DWORD loginAddress, u
 /// <summary>
 /// Changing port of Tibia client
 /// </summary>
-bool Tools::changePort(HANDLE procHandle, unsigned short newPort, DWORD loginAddress, unsigned short maxLoginServers)
+bool Tools::changePort(HANDLE procHandle, unsigned short newPort, const DWORD loginAddress, unsigned short maxLoginServers)
 {
-	for(int i = 0; i < maxLoginServers; i++)
+	DWORD addr = loginAddress;
+    for(int i = 0; i < maxLoginServers; i++)
 	{
-		if(!writeByte(procHandle, loginAddress + PortDistance, newPort, 4))
+		if(!writeByte(procHandle, addr + PortDistance, newPort, 4))
 			return false;
 
-		loginAddress += IpDistance;
+		addr += IpDistance;
 	}
 	return true;
 }
@@ -479,16 +484,16 @@ bool Tools::setNewConnection(const char* newIP, unsigned short newPort, bool cha
 			return false;
 
 		char* clientVersion;
-        clientVersion = new char[getClientVersion(procHandle).size()];
+		clientVersion = new char[getClientVersion(procHandle).size()];
 		strcpy(clientVersion, getClientVersion(procHandle).c_str());
 
 		for(int i = 0; i <= MAX_AMOUNT_OF_PROTOCOLS; i++)
 		{
 			if(strcmp(clientVersion, rAddr[i].protocol) == 0)
 			{
-    	        if(rAddr[i].isUsed)
+				if(rAddr[i].isUsed)
 				{
-					if(rAddr[i].rsaAddr != 0)
+					if(rAddr[i].rsaAddr != 0x00)
 					{
 						if(rsaKey.empty())
 							rsaKey = OTSERV_RSA_KEY;
@@ -501,7 +506,7 @@ bool Tools::setNewConnection(const char* newIP, unsigned short newPort, bool cha
 							std::string getCustomTibiaText = readString("CustomTibiaTitle");
 							replaceString(getCustomTibiaText, "$protocol$", clientVersion);
 							replaceString(getCustomTibiaText, "$ipaddress$", newIP);
-							char newPort2[MAX_PATH];
+							char newPort2[10];
 							_itoa(newPort, newPort2, 10);
 							replaceString(getCustomTibiaText, "$port$", newPort2);
 							SetWindowTextA(tibiaWindow, getCustomTibiaText.c_str());
@@ -589,7 +594,7 @@ bool Tools::loadFromXmlIpList()
 		IpListPort[i].clear();
 	}
 
-    xmlDocPtr doc = xmlParseFile(getFilePath(SERVER_LIST_FILE).c_str());
+	xmlDocPtr doc = xmlParseFile(getFilePath(SERVER_LIST_FILE).c_str());
 	if(!doc)
 		return false;
 	xmlNodePtr root, p;
@@ -653,7 +658,6 @@ std::string Tools::getExeDir()
 			return buffer;
 		}
 	}
-	return "";
 }
 
 /// <summary>
@@ -662,7 +666,7 @@ std::string Tools::getExeDir()
 std::string Tools::getFilePath(const char* fileName)
 {
 	char filePath[MAX_PATH];
-	sprintf(filePath, "%s/%s", getExeDir().c_str(), fileName);
+	sprintf(filePath, "%s\\%s", getExeDir().c_str(), fileName);
 	return filePath;
 }
 
@@ -688,20 +692,21 @@ bool Tools::loadFromXmlAddresses()
 	{
 		std::string strVal;
 		int intVal;
-		char buffer[MAX_PATH];
-		if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
+		char buffer[255];
+		FILE* file = fopen("Addr.txt", "w+");
+        if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
 		{
 			if(readXMLString(p, "rsaAddr", strVal))
 			{
 				ZeroMemory(buffer, sizeof(buffer));
 				strcpy(buffer, strVal.c_str());
-				rAddr[cID].rsaAddr = strtoul(buffer, NULL, 0);
+				rAddr[cID].rsaAddr = strtol(buffer, NULL, 16);
 			}
 			if(readXMLString(p, "ipAddr", strVal))
 			{
 				ZeroMemory(buffer, sizeof(buffer));
 				strcpy(buffer, strVal.c_str());
-				rAddr[cID].ipAddr = strtoul(buffer, NULL, 0);
+				rAddr[cID].ipAddr = strtol(buffer, NULL, 16);
 			}
 			if(readXMLInteger(p, "loginServers", intVal))
 			{
@@ -709,7 +714,7 @@ bool Tools::loadFromXmlAddresses()
 			}
 			if(readXMLString(p, "Version", strVal))
 			{
-				rAddr[cID].protocol = new char[strlen(strVal.c_str())];
+				rAddr[cID].protocol = new char[strVal.size()+1];
 				strcpy(rAddr[cID].protocol, strVal.c_str());
 				rAddr[cID].isUsed = true;
 			}

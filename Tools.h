@@ -48,14 +48,14 @@
 
 struct clientVersion
 {
-	DWORD rsaAddr, ipAddr;
+	unsigned long rsaAddr, ipAddr;
 	unsigned short loginServers;
 };
 
 struct addressReading
 {
-	DWORD rsaAddr;
-	DWORD ipAddr;
+	unsigned long rsaAddr;
+	unsigned long ipAddr;
 	unsigned short loginServers;
 	char* protocol;
 	bool isUsed;
@@ -106,9 +106,9 @@ class Tools
 		bool writeString(HANDLE procHandle, DWORD lpBaseAddress, const char* lpBuffer);
 		bool writeByte(HANDLE procHandle, DWORD lpBaseAddress, const int lpBuffer, const int nSize);
 
-		bool setRSA(HANDLE procHandle, DWORD rsaAddr, const char newRsaKey[]);
-		bool changeIP(HANDLE procHandle, const char* newIP, DWORD loginAddress, unsigned short maxLoginServers);
-		bool changePort(HANDLE procHandle, unsigned short newPort, DWORD loginAddress, unsigned short maxLoginServers);
+		bool setRSA(HANDLE procHandle, const DWORD rsaAddr, const char newRsaKey[]);
+		bool changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddress, unsigned short maxLoginServers);
+		bool changePort(HANDLE procHandle, unsigned short newPort, const DWORD loginAddress, unsigned short maxLoginServers);
 		bool setNewConnection(const char* newIP, unsigned short newPort, bool changeTitle);
 
 		bool utf8ToLatin1(char* intext, std::string& outtext);
