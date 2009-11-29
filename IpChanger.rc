@@ -80,7 +80,7 @@ BEGIN
 	 PUSHBUTTON "Klucz dla OpenTibia", ID_DLG_RSA_DEFAULT, 3, 82, 70, 12
 	 PUSHBUTTON "Zapisz", ID_DLG_RSA_SAVE, 85, 82, 55, 12, WS_DISABLED
 	 PUSHBUTTON "Wczytaj", ID_DLG_RSA_LOAD, 147, 82, 50, 12, WS_DISABLED
-	 AUTOCHECKBOX "U¿yj innego klucza", ID_DLG_RSA_USE_OTHER, 5, 97, 72, 8, WS_TABSTOP
+	 AUTOCHECKBOX "U¿yj innego klucza", ID_DLG_RSA_USE_OTHER, 5, 97, 72, 8, WS_TABSTOP | WS_DISABLED
 	 PUSHBUTTON "U¿yj wpisanego", ID_DLG_RSA_USE_THIS_ONE, 85, 97, 55, 12, WS_DISABLED
 
 	 GROUPBOX "", ID_STATIC, 0, 115, 200, 58
@@ -146,7 +146,7 @@ VS_VERSION_INFO VERSIONINFO
 			BLOCK "041504b0"
 			BEGIN
 				VALUE "CompanyName", "OTFans.pl\0"
-				VALUE "FileDescription", "Oficjalny IP Changer serwisu OTFans.pl dla gry MMORPG 'Tibia'\0"
+				VALUE "FileDescription", "Official IP Changer of OTFans.pl for 'Tibia'\0"
 				VALUE "FileVersion", CURRENT_VERSION2
 				VALUE "InternalName", "IP Changer\0"
 				VALUE "LegalCopyright", "OTFans.pl\0"

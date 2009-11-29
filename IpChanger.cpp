@@ -20,7 +20,7 @@
 #define _WIN32_WINNT 0x0502
 
 #include <stdio.h>
-#include <winsock2.h>
+#include <winsock.h>
 #include "WinGUI.h"
 
 #include "resource.h"
@@ -140,8 +140,8 @@ BOOL CALLBACK ServerInfoProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 					else
 						gui.addLineToLabel(hwnd, ID_DLG_SERVER, tools.languageTable[8]);
 
-					tools.SA = tools.sSAddrCreate(ipAddress, atoi(newPort));
-					int nRet = connect(tools.sSock, (LPSOCKADDR)&tools.SA, sizeof(struct sockaddr));
+					tools.SA = tools.sSAddrCreate(ipAddress, (unsigned short)atoi(newPort));
+					connect(tools.sSock, (LPSOCKADDR)&tools.SA, sizeof(struct sockaddr));
 					SetTimer(hwnd, ID_TMR_SOCK_TIMEOUT, 10000, NULL);
 					break;
 				}
@@ -189,7 +189,7 @@ BOOL CALLBACK ServerInfoProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 						cPacket[5] = 'n';
 						cPacket[6] = 'f';
 						cPacket[7] = 'o';
-						int nRet = send(tools.sSock, (const char*)cPacket, sizeof(cPacket), 0);
+						send(tools.sSock, (const char*)cPacket, sizeof(cPacket), 0);
 						tools.bSend = false;
 					}
 					break;
@@ -703,11 +703,11 @@ BOOL CALLBACK serverList(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 					{
 						if(SendDlgItemMessage(gui.mainWindow, ID_DLG_CHANGE_TITLE, BM_GETCHECK, 0, 0))
 						{
-							tools.setNewConnection(cAddress, atoi(cPort), true);
+							tools.setNewConnection(cAddress, (unsigned short)atoi(cPort), true);
 						}
 						else
 						{
-							tools.setNewConnection(cAddress, atoi(cPort), false);
+							tools.setNewConnection(cAddress, (unsigned short)atoi(cPort), false);
 						}
 					}
 					break;
@@ -855,7 +855,6 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 			if(tools.loadFromXmlIpList())
 			{
-				int nCount = ListView_GetItemCount(gui.hWndIpList);
 				for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
 				{
 					if(!tools.IpListAddr[i].empty())
@@ -926,22 +925,27 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 				case ID_DLG_CHANGE_IP:
 				{
-					char ipAddress[MAX_PATH];
+					char ipAddress[255], port[10];
 					if(GetDlgItemText(hWnd, ID_DLG_IP, ipAddress, sizeof(ipAddress)))
 					{
-						unsigned short newPort = GetDlgItemInt(hWnd, ID_DLG_PORT, NULL, TRUE);
-						if(newPort == 0)
-							newPort = 7171;
-
+						GetDlgItemText(hWnd, ID_DLG_PORT, port, sizeof(port));
 						if(HIWORD(wParam) == BN_CLICKED)
 						{
 							if(SendDlgItemMessage(hWnd, ID_DLG_CHANGE_TITLE, BM_GETCHECK, 0, 0))
 							{
-								tools.setNewConnection(ipAddress, newPort, true);
+								if(tools.setNewConnection(ipAddress, (unsigned short)atoi(port), true))
+								{
+									if(tools.getShowMessageBox())
+										gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[37], ipAddress, port);
+								}
 							}
 							else
 							{
-								tools.setNewConnection(ipAddress, newPort, false);
+								if(tools.setNewConnection(ipAddress, (unsigned short)atoi(port), false))
+								{
+									if(tools.getShowMessageBox())
+										gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[37], ipAddress, port);
+								}
 							}
 						}
 					}
@@ -995,7 +999,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	return false;
 }
 
-int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	INITCOMMONCONTROLSEX iccex;
 	iccex.dwICC = ICC_WIN95_CLASSES;
@@ -1029,7 +1033,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 		if(!parseCommandLine(std::vector<std::string>(argList, argList + nArgs)))
 			return 0;
 
-		if(tools.setNewConnection(tools.cmdLineIP, atoi(tools.cmdLinePort), tools.getChangeTitleCmdLine()))
+		if(tools.setNewConnection(tools.cmdLineIP, (unsigned short)atoi(tools.cmdLinePort), tools.getChangeTitleCmdLine()))
 		{
 			if(tools.getShowMessageBox())
 			{
@@ -1053,7 +1057,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 
 		if(pPort != NULL && pIp != NULL && pClient != NULL)
 		{
-			if(tools.setNewConnection(pIp, atoi(pPort), tools.getChangeTitleCmdLine()))
+			if(tools.setNewConnection(pIp, (unsigned short)atoi(pPort), tools.getChangeTitleCmdLine()))
 			{
 				if(tools.getShowMessageBox())
 					gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[40], pIp, pPort, pClient);
@@ -1065,7 +1069,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 	{
 		WNDCLASSEX wincl;
 
-		wincl.hInstance = hThisInstance;
+		wincl.hInstance = hInstance;
 		wincl.lpszClassName = "OTFansPlIpChangerClass";
 		wincl.lpfnWndProc = NULL;
 		wincl.style = CS_DBLCLKS;
@@ -1082,9 +1086,11 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpCmd
 		if(!RegisterClassEx(&wincl))
 			return 0;
 
-		gui.hInst = hThisInstance;
-		gui.mainMenu = GetSubMenu(LoadMenu(hThisInstance, MAKEINTRESOURCE(ID_MAIN_MENU)), 0);
+		gui.hInst = hInstance;
+		gui.mainMenu = GetSubMenu(LoadMenu(gui.hInst, MAKEINTRESOURCE(ID_MAIN_MENU)), 0);
 		CreateDialog(gui.hInst, MAKEINTRESOURCE(ID_DLG_OPTIONS_WINDOW), NULL, OptionsWindow);
-		return DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_MAIN_GUI), HWND_DESKTOP, MainWindowProc);
+		DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_MAIN_GUI), HWND_DESKTOP, MainWindowProc);
+		return 0;
 	}
+	return 0;
 }
