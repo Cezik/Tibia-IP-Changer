@@ -34,7 +34,7 @@ bool saveServerList()
 {
 	xmlNodePtr root, listNode;
 	xmlDocPtr doc = xmlNewDoc((const xmlChar*)"1.0");
-	doc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)"IPList", NULL);
+	doc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)SECTION, NULL);
 	root = doc->children;
 	for(int i = 0; i < ListView_GetItemCount(gui.hWndIpList); i++)
 	{
