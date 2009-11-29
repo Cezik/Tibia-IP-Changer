@@ -46,12 +46,6 @@
 #define LANGUAGE_FILE "Language.ini"
 #define SECTION "OTFans"
 
-struct clientVersion
-{
-	unsigned long rsaAddr, ipAddr;
-	unsigned short loginServers;
-};
-
 struct addressReading
 {
 	unsigned long rsaAddr;
@@ -91,7 +85,7 @@ class Tools
 
 		void replaceString(std::string& str, const std::string sought, const std::string replacement);
 		bool isCharInteger(const char* character);
-		std::string WStringToString(const std::wstring& s);
+		std::string WStringToString(const std::wstring s);
 
 		SOCKET createSocket(HWND hwnd);
 		SOCKADDR_IN sSAddrCreate(const char* ipAddress, unsigned short iPort);

@@ -16,11 +16,13 @@
 // Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define TTM_SETTITLE (WM_USER + 32)
+#ifndef _MSC_VER
+#define TTM_SETTITLE (WM_USER+32)
+#endif
 
 #define NAME "IP Changer"
-#define CURRENT_VERSION  1,0,8,32
-#define CURRENT_VERSION2 "1.0.8.32\0"
+#define CURRENT_VERSION  1,0,8,33
+#define CURRENT_VERSION2 "1.0.8.33\0"
 
 #define ID_STATIC -1
 
@@ -35,7 +37,7 @@
 #define ID_ICON_INFORMATION 18
 #define ID_ICON_CHANGEIP 19
 
-#define ID_ICON_LAST ID_ICON_CHANGEIP + 1
+#define ID_ICON_LAST ID_ICON_CHANGEIP+1
 
 #define ID_DLG_LISTVIEW 99
 #define ID_ICON 100

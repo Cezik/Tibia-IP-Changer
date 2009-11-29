@@ -1,7 +1,7 @@
 [Project]
 FileName=IPChanger.dev
 Name=IPChanger
-UnitCount=8
+UnitCount=10
 Type=0
 Ver=1
 ObjFiles=
@@ -118,6 +118,26 @@ BuildCmd=
 
 [Unit6]
 FileName=..\WinGUI.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
+FileName=..\Settings.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit10]
+FileName=..\Settings.h
 CompileCpp=1
 Folder=
 Compile=1

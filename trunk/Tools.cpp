@@ -110,32 +110,31 @@ void Tools::replaceString(std::string& str, const std::string sought, const std:
 /// </summary>
 bool Tools::isCharInteger(const char* character)
 {
-	 switch(character[0])
-	 {
-		 case '0':
-		 case '1':
-		 case '2':
-		 case '3':
-		 case '4':
-		 case '5':
-		 case '6':
-		 case '7':
-		 case '8':
-		 case '9':
-			 return true;
-		 default:
-			 return false;
-	 }
-	 return false;
+	switch(character[0])
+	{
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			return true;
+			break;
+		default:
+			return false;
+	}
 }
 
 /// <summary>
 /// Converts "WString" to "String"
 /// </summary>
-std::string Tools::WStringToString(const std::wstring& s)
+std::string Tools::WStringToString(const std::wstring s)
 {
-	std::string temp(s.length(), ' ');
-	std::copy(s.begin(), s.end(), temp.begin());
+	std::string temp(s.begin(), s.end());
 	return temp;
 }
 
@@ -198,13 +197,13 @@ bool Tools::addSupportForOTServList()
 		char szAppPath[MAX_PATH];
 		GetModuleFileName(0, szAppPath, sizeof(szAppPath));
 		strcat(szAppPath, " %1");
-		if(RegSetValueEx(hKey, NULL, 0, REG_SZ, (LPBYTE)szAppPath, strlen(szAppPath)) == ERROR_SUCCESS)
+		if(RegSetValueEx(hKey, NULL, 0, REG_SZ, (LPBYTE)szAppPath, (DWORD)strlen(szAppPath)) == ERROR_SUCCESS)
 		{
 			if(RegCreateKeyEx(HKEY_CLASSES_ROOT, "OTSERV", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, 0, &hKey2, &dwDisp2) == ERROR_SUCCESS)
 			{
 				char newValue[MAX_PATH];
 				strcpy(newValue, "URL:Open Tibia Server");
-				if(RegSetValueEx(hKey2, NULL, 0, REG_SZ, (LPBYTE)newValue, strlen(newValue)) == ERROR_SUCCESS)
+				if(RegSetValueEx(hKey2, NULL, 0, REG_SZ, (LPBYTE)newValue, (DWORD)strlen(newValue)) == ERROR_SUCCESS)
 				{
 					ZeroMemory(newValue, sizeof(newValue));
 					if(RegSetValueEx(hKey2, "Source Filter", 0, REG_SZ, NULL, 0) == ERROR_SUCCESS)
@@ -253,7 +252,7 @@ void Tools::StringToke(HWND hwnd, char* szBuffer)
 	 char* MapWidth = TEXT(languageTable[4]);
 	 char* MapHeight = TEXT(languageTable[4]);
 	 char* Motd = TEXT(languageTable[4]);
-	 unsigned long nSeconds, nDays, nHours, nMinutes, nHOut = 0, nMOut = 0, nSOut = 0;
+	 unsigned long nSeconds = 0, nDays = 0, nHours = 0, nMinutes = 0, nHOut = 0, nMOut = 0, nSOut = 0;
 	 token = strtok(szBuffer, cSeparator);
 
 	 while(token != NULL)
@@ -458,7 +457,7 @@ bool Tools::changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddr
 bool Tools::changePort(HANDLE procHandle, unsigned short newPort, const DWORD loginAddress, unsigned short maxLoginServers)
 {
 	DWORD addr = loginAddress;
-    for(int i = 0; i < maxLoginServers; i++)
+	for(int i = 0; i < maxLoginServers; i++)
 	{
 		if(!writeByte(procHandle, addr + PortDistance, newPort, 4))
 			return false;
@@ -493,13 +492,17 @@ bool Tools::setNewConnection(const char* newIP, unsigned short newPort, bool cha
 			{
 				if(rAddr[i].isUsed)
 				{
-					if(rAddr[i].rsaAddr != 0x00)
+					const DWORD rsaAddr = rAddr[i].rsaAddr;
+					const DWORD ipAddr = rAddr[i].ipAddr;
+					const short loginServers = rAddr[i].loginServers;
+					if(rsaAddr != 0x00)
 					{
-						if(rsaKey.empty())
-							rsaKey = OTSERV_RSA_KEY;
-						setRSA(procHandle, rAddr[i].rsaAddr, rsaKey.c_str());
+						if(getUseOtherRSA())
+							setRSA(procHandle, rsaAddr, rsaKey.c_str());
+						else
+							setRSA(procHandle, rsaAddr, OTSERV_RSA_KEY);
 					}
-					if(changeIP(procHandle, newIP, rAddr[i].ipAddr, rAddr[i].loginServers) && changePort(procHandle, newPort, rAddr[i].ipAddr, rAddr[i].loginServers))
+					if(changeIP(procHandle, newIP, ipAddr, loginServers) && changePort(procHandle, newPort, ipAddr, loginServers))
 					{
 						if(changeTitle)
 						{
@@ -530,15 +533,15 @@ bool Tools::setNewConnection(const char* newIP, unsigned short newPort, bool cha
 
 bool Tools::utf8ToLatin1(char* intext, std::string& outtext)
 {
-	outtext = "";
+	outtext.clear();
 	if(intext == NULL)
 		return false;
-	int inlen  = strlen(intext);
+	size_t inlen  = strlen(intext);
 	if(inlen == 0)
 		return false;
-	int outlen = inlen*2;
+	size_t outlen = inlen*2;
 	unsigned char* outbuf = new unsigned char[outlen];
-	int res = UTF8Toisolat1(outbuf, &outlen, (unsigned char*)intext, &inlen);
+	int res = UTF8Toisolat1(outbuf, (int*)&outlen, (unsigned char*)intext, (int*)&inlen);
 	if(res < 0)
 	{
 		delete[] outbuf;
@@ -599,7 +602,7 @@ bool Tools::loadFromXmlIpList()
 		return false;
 	xmlNodePtr root, p;
 	root = xmlDocGetRootElement(doc);
-	if(xmlStrcmp(root->name,(const xmlChar*)"IPList") != 0)
+	if(xmlStrcmp(root->name,(const xmlChar*)SECTION) != 0)
 	{
 		xmlFreeDoc(doc);
 		return false;
@@ -658,6 +661,7 @@ std::string Tools::getExeDir()
 			return buffer;
 		}
 	}
+	return "";
 }
 
 /// <summary>
@@ -678,9 +682,10 @@ bool Tools::loadFromXmlAddresses()
 	xmlDocPtr doc = xmlParseFile(getFilePath(ADDRESSES_FILE).c_str());
 	if(!doc)
 		return false;
+
 	xmlNodePtr root, p;
 	root = xmlDocGetRootElement(doc);
-	if(xmlStrcmp(root->name,(const xmlChar*)"OTFans") != 0)
+	if(xmlStrcmp(root->name,(const xmlChar*)SECTION) != 0)
 	{
 		xmlFreeDoc(doc);
 		return false;
@@ -692,25 +697,8 @@ bool Tools::loadFromXmlAddresses()
 	{
 		std::string strVal;
 		int intVal;
-		char buffer[255];
-        if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
+		if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
 		{
-			if(readXMLString(p, "rsaAddr", strVal))
-			{
-				ZeroMemory(buffer, sizeof(buffer));
-				strcpy(buffer, strVal.c_str());
-				rAddr[cID].rsaAddr = strtol(buffer, NULL, 16);
-			}
-			if(readXMLString(p, "ipAddr", strVal))
-			{
-				ZeroMemory(buffer, sizeof(buffer));
-				strcpy(buffer, strVal.c_str());
-				rAddr[cID].ipAddr = strtol(buffer, NULL, 16);
-			}
-			if(readXMLInteger(p, "loginServers", intVal))
-			{
-				rAddr[cID].loginServers = intVal;
-			}
 			if(readXMLString(p, "Version", strVal))
 			{
 				rAddr[cID].protocol = new char[strVal.size()+1];
@@ -719,6 +707,18 @@ bool Tools::loadFromXmlAddresses()
 			}
 			else
 				rAddr[cID].isUsed = false;
+			if(readXMLString(p, "rsaAddr", strVal))
+			{
+				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].rsaAddr);
+			}
+			if(readXMLString(p, "ipAddr", strVal))
+			{
+				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].ipAddr);
+			}
+			if(readXMLInteger(p, "loginServers", intVal))
+			{
+				rAddr[cID].loginServers = (unsigned short)intVal;
+			}
 			cID++;
 		}
 		p = p->next;

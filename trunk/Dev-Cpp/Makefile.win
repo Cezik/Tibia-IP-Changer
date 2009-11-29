@@ -5,11 +5,11 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = Obj/IPChanger_private.res
-OBJ  = Obj/IpChanger.o Obj/WinGUI.o Obj/Tools.o $(RES)
-LINKOBJ  = Obj/IpChanger.o Obj/WinGUI.o Obj/Tools.o $(RES)
-LIBS =  -L"lib" -mwindows -lcomctl32 -lversion -lpsapi -lwsock32 -lshlwapi -lxml2 -s  
-INCS =  -I"include" 
-CXXINCS =  -I"include" 
+OBJ  = Obj/IpChanger.o Obj/WinGUI.o Obj/Tools.o Obj/Settings.o $(RES)
+LINKOBJ  = Obj/IpChanger.o Obj/WinGUI.o Obj/Tools.o Obj/Settings.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -mwindows -lcomctl32 -lversion -lpsapi -lwsock32 -lshlwapi -lxml2 -s  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
 BIN  = IPChanger.exe
 CXXFLAGS = $(CXXINCS)  
 CFLAGS = $(INCS)  
@@ -34,6 +34,9 @@ Obj/WinGUI.o: ../WinGUI.cpp
 
 Obj/Tools.o: ../Tools.cpp
 	$(CPP) -c ../Tools.cpp -o Obj/Tools.o $(CXXFLAGS)
+
+Obj/Settings.o: ../Settings.cpp
+	$(CPP) -c ../Settings.cpp -o Obj/Settings.o $(CXXFLAGS)
 
 Obj/IPChanger_private.res: IPChanger_private.rc ../IpChanger.rc 
 	$(WINDRES) -i IPChanger_private.rc --input-format=rc -o Obj/IPChanger_private.res -O coff 
