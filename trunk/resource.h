@@ -21,8 +21,8 @@
 #endif
 
 #define NAME "IP Changer"
-#define CURRENT_VERSION  1,0,8,4
-#define CURRENT_VERSION2 "1.0.8.4\0"
+#define CURRENT_VERSION  1,0,8,5
+#define CURRENT_VERSION2 "1.0.8.5\0"
 
 #define ID_STATIC -1
 
