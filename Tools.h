@@ -122,7 +122,7 @@ class Tools
 
 		char* cmdLineIP;
 		char* cmdLinePort;
-		char languageTable[LANGUAGE_STRINGS+1][MAX_PATH];
+		char languageTable[LANGUAGE_STRINGS+1][512];
 
 		VS_FIXEDFILEINFO vsf;
 
@@ -130,6 +130,8 @@ class Tools
 
 		bool loadFromXmlAddresses();
 		addressReading rAddr[MAX_AMOUNT_OF_PROTOCOLS];
+
+		bool updateXmlAddresses();
 
 	protected:
 		bool useOtherRSA, checkFromList, showMessageBox, changeTitleCmdLine, supportForOTServList, showToolTips;

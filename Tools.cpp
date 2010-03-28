@@ -726,3 +726,90 @@ bool Tools::loadFromXmlAddresses()
 	xmlFreeDoc(doc);
 	return true;
 }
+
+/// <summary>
+/// Checks for Addresses.xml file update
+/// </summary>
+bool Tools::updateXmlAddresses()
+{
+	xmlDocPtr doc = xmlParseFile(ADDRESSES_CHECK);
+	if(!doc)
+		return false;
+
+	xmlNodePtr p, root = xmlDocGetRootElement(doc);
+	if(xmlStrcmp(root->name,(const xmlChar*)SECTION) != 0)
+	{
+		xmlFreeDoc(doc);
+		return false;
+	}
+
+	p = root->children;
+	int cID = 0;
+	addressReading updateAddr[MAX_AMOUNT_OF_PROTOCOLS];
+	while(p)
+	{
+		std::string strVal;
+		int intVal;
+		if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
+		{
+			if(readXMLString(p, "Version", strVal))
+			{
+				updateAddr[cID].protocol = new char[strVal.size()+1];
+				strcpy(updateAddr[cID].protocol, strVal.c_str());
+				updateAddr[cID].isUsed = true;
+			}
+			else
+				updateAddr[cID].isUsed = false;
+			if(readXMLString(p, "rsaAddr", strVal))
+			{
+				sscanf(strVal.c_str(), "0x%X", &updateAddr[cID].rsaAddr);
+			}
+			if(readXMLString(p, "ipAddr", strVal))
+			{
+				sscanf(strVal.c_str(), "0x%X", &updateAddr[cID].ipAddr);
+			}
+			if(readXMLInteger(p, "loginServers", intVal))
+			{
+				updateAddr[cID].loginServers = (unsigned short)intVal;
+			}
+			cID++;
+		}
+		p = p->next;
+	}
+	xmlFreeDoc(doc);
+
+
+	doc = xmlNewDoc((const xmlChar*)"1.0");
+	doc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)SECTION, NULL);
+	xmlNodePtr listNode;
+
+	root = doc->children;
+
+	for(int i = 0; i < MAX_AMOUNT_OF_PROTOCOLS; i++)
+	{
+		if(updateAddr[i].isUsed)
+		{
+			char buffer[255];
+            listNode = xmlNewNode(NULL,(const xmlChar*)"Protocol");
+			xmlSetProp(listNode, (const xmlChar*) "Version", (const xmlChar*)updateAddr[i].protocol);
+			sprintf(buffer, "0x%X", updateAddr[i].rsaAddr);
+			xmlSetProp(listNode, (const xmlChar*) "rsaAddr", (const xmlChar*)buffer);
+			sprintf(buffer, "0x%X", updateAddr[i].ipAddr);
+			xmlSetProp(listNode, (const xmlChar*) "ipAddr", (const xmlChar*)buffer);
+			sprintf(buffer, "%i", updateAddr[i].loginServers);
+			xmlSetProp(listNode, (const xmlChar*) "loginServers", (const xmlChar*)buffer);
+			xmlAddChild(root, listNode);
+		}
+	}
+
+	if(xmlSaveFile(getFilePath(ADDRESSES_FILE).c_str(), doc))
+	{
+		xmlFreeDoc(doc);
+		return true;
+	}
+	else
+	{
+		xmlFreeDoc(doc);
+		return false;
+	}
+}

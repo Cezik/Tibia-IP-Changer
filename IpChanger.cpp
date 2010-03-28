@@ -883,6 +883,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_EXIT, MF_BYCOMMAND, gui.hbIcons[ID_ICON_CLOSE], gui.hbIcons[ID_ICON_CLOSE]);
 			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_OPTIONS, MF_BYCOMMAND, gui.hbIcons[ID_ICON_OPTIONS], gui.hbIcons[ID_ICON_OPTIONS]);
 			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_IP_LIST, MF_BYCOMMAND, gui.hbIcons[ID_ICON_IPLIST], gui.hbIcons[ID_ICON_IPLIST]);
+			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_UPDATE, MF_BYCOMMAND, gui.hbIcons[ID_ICON_UPDATE], gui.hbIcons[ID_ICON_UPDATE]);
 			SetMenuItemBitmaps(gui.trayMenu, ID_MENU_IP_LIST, MF_BYCOMMAND, gui.hbIcons[ID_ICON_IPLIST], gui.hbIcons[ID_ICON_IPLIST]);
 			SetMenuItemBitmaps(gui.trayMenu, ID_MENU_TRAY_HIDE, MF_BYCOMMAND, gui.hbIcons[ID_ICON_TRAY], gui.hbIcons[ID_ICON_TRAY]);
 			SetMenuItemBitmaps(gui.trayMenu, ID_MENU_EXIT, MF_BYCOMMAND, gui.hbIcons[ID_ICON_CLOSE], gui.hbIcons[ID_ICON_CLOSE]);
@@ -890,6 +891,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			ModifyMenu(gui.mainMenu, ID_MENU_IP_LIST, MF_STRING, ID_MENU_IP_LIST, tools.languageTable[15]);
 			ModifyMenu(gui.mainMenu, ID_MENU_OPTIONS, MF_STRING, ID_MENU_OPTIONS, tools.languageTable[36]);
 			ModifyMenu(gui.mainMenu, ID_MENU_EXIT, MF_STRING, ID_MENU_EXIT, tools.languageTable[14]);
+			ModifyMenu(gui.mainMenu, ID_MENU_UPDATE, MF_STRING, ID_MENU_UPDATE, tools.languageTable[71]);
 
 			SendDlgItemMessage(hWnd, ID_DLG_CHANGE_TITLE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[57]);
 			SendDlgItemMessage(hWnd, ID_DLG_CHANGE_IP, WM_SETTEXT, 0, (LPARAM)tools.languageTable[58]);
@@ -902,6 +904,10 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			{
 				case ID_MENU_EXIT:
 					SendMessage(hWnd, WM_DESTROY, 0, 0);
+					break;
+
+				case ID_MENU_UPDATE:
+					tools.updateXmlAddresses();
 					break;
 
 				case ID_DLG_REFRESH_LIST:
