@@ -101,7 +101,7 @@ HWND WinGUI::doCreateListView(HWND hParent, int x, int y, int nWidth, int nHeigh
 {
 	HWND hLview;
 	RECT rParent;
-	char szBuffer[MAX_PATH];
+	char szBuffer[256];
 	ZeroMemory(szBuffer, sizeof(szBuffer));
 	GetClientRect(hParent, &rParent);
 	INITCOMMONCONTROLSEX icex;
@@ -129,7 +129,7 @@ bool WinGUI::messageBox(MesageBoxType_t type, const char* title, const char* tex
 {
 	va_list list;
 	va_start(list, text);
-	char buffer[MAX_PATH];
+	char buffer[4096];
 	_vsnprintf(buffer, sizeof(buffer), text, list);
 	va_end(list);
 
@@ -173,7 +173,7 @@ bool WinGUI::messageBox(MesageBoxType_t type, const char* title, const char* tex
 
 void WinGUI::addLineToLabel(HWND hwnd, int ResourceID, const char* text, ...)
 {
-	char oldBuffer[MAX_PATH], newBuffer[MAX_PATH], buffer[MAX_PATH];
+	char oldBuffer[4096], newBuffer[4096], buffer[4096];
 	va_list list;
 	va_start(list, text);
 	_vsnprintf(buffer, sizeof(buffer), text, list);
