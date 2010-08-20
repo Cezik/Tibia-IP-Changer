@@ -38,7 +38,7 @@ bool saveServerList()
 	root = doc->children;
 	for(int i = 0; i < ListView_GetItemCount(gui.hWndIpList); i++)
 	{
-		char cAddress[MAX_PATH], cPort[MAX_PATH];
+		char cAddress[256], cPort[10];
 		ListView_GetItemText(gui.hWndIpList, i, 0, cAddress, sizeof(cAddress));
 		ListView_GetItemText(gui.hWndIpList, i, 1, cPort, sizeof(cPort));
 
@@ -114,7 +114,7 @@ BOOL CALLBACK ServerInfoProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 			{
 				case ID_TMR_SOCK_CON:
 				{
-					char ipAddress[MAX_PATH], newPort[MAX_PATH], cStatusBar[MAX_PATH];
+					char ipAddress[256], newPort[10], cStatusBar[1024];
 					if(!tools.getCheckFromList())
 					{
 						if(!GetDlgItemText(gui.mainWindow, ID_DLG_IP, ipAddress, sizeof(ipAddress)) || !GetDlgItemText(gui.mainWindow, ID_DLG_PORT, newPort, sizeof(newPort)))
@@ -241,7 +241,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 					{
 						case ID_DLG_PROTOCOL_TXT:
 						{
-							char buffer[MAX_PATH];
+							char buffer[1024];
 							GetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, buffer, sizeof(buffer));
 							strcat(buffer, "$protocol$");
 							SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, buffer);
@@ -250,7 +250,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 						case ID_DLG_IPADDR_TXT:
 						{
-							char buffer[MAX_PATH];
+							char buffer[1024];
 							GetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, buffer, sizeof(buffer));
 							strcat(buffer, "$ipaddress$");
 							SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, buffer);
@@ -259,7 +259,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 						case ID_DLG_PORT_TXT:
 						{
-							char buffer[MAX_PATH];
+							char buffer[1024];
 							GetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, buffer, sizeof(buffer));
 							strcat(buffer, "$port$");
 							SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, buffer);
@@ -350,7 +350,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				case ID_DLG_RSA_SAVE:
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_RSA_USE_OTHER, BM_GETCHECK, 0, 0))
 					{
-						char saveRsaKey[MAX_PATH];
+						char saveRsaKey[4096];
 						GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, saveRsaKey, sizeof(saveRsaKey));
 
 						tools.rsaKey = saveRsaKey;
@@ -371,7 +371,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 				case ID_DLG_RSA_USE_THIS_ONE:
 				{
-					char saveRsaKey[MAX_PATH];
+					char saveRsaKey[4096];
 					GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, saveRsaKey, sizeof(saveRsaKey));
 					tools.rsaKey = saveRsaKey;
 					break;
@@ -411,7 +411,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 				case ID_DLG_TITLE_SAVE:
 				{
-					char saveTibiaTitle[MAX_PATH];
+					char saveTibiaTitle[4096];
 					GetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, saveTibiaTitle, sizeof(saveTibiaTitle));
 					WritePrivateProfileString(SECTION, "CustomTibiaTitle", saveTibiaTitle, tools.getFilePath(CONFIG_FILE).c_str());
 					break;
@@ -481,8 +481,8 @@ BOOL CALLBACK EditServerProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 	switch(message)
 	{
 		case WM_INITDIALOG:
-			char cAddress[MAX_PATH];
-			char cPort[MAX_PATH];
+			char cAddress[256];
+			char cPort[10];
 			ListView_GetItemText(gui.hWndIpList, gui.nLastItem, 0, cAddress, sizeof(cAddress));
 			ListView_GetItemText(gui.hWndIpList, gui.nLastItem, 1, cPort, sizeof(cPort));
 			SetDlgItemText(hwnd, ID_DLG_EDIT_ADDRESS, cAddress);
@@ -509,7 +509,7 @@ BOOL CALLBACK EditServerProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 			{
 				case ID_DLG_EDIT_SAVE:
 				{
-					char cAddress[MAX_PATH], cPort[MAX_PATH];
+					char cAddress[256], cPort[10];
 					GetDlgItemText(hwnd, ID_DLG_EDIT_ADDRESS, cAddress, sizeof(cAddress));
 					GetDlgItemText(hwnd, ID_DLG_EDIT_PORT, cPort, sizeof(cPort));
 					gui.doSetItem(gui.hWndIpList, cAddress, gui.nLastItem, 0);
@@ -565,7 +565,7 @@ BOOL CALLBACK AddServerProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 			{
 				case ID_DLG_ADD_ADD:
 				{
-					char cAddress[MAX_PATH], cPort[10];
+					char cAddress[256], cPort[10];
 					if(GetDlgItemText(hwnd, ID_DLG_ADD_ADDRESS, cAddress, sizeof(cAddress)) && GetDlgItemText(hwnd, ID_DLG_ADD_PORT, cPort, sizeof(cPort)))
 					{
 						int nRet = ListView_GetItemCount(gui.hWndIpList);
@@ -696,7 +696,7 @@ BOOL CALLBACK serverList(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				case ID_MENU_CHANGE_IP:
 				{
-					char cAddress[MAX_PATH], cPort[MAX_PATH];
+					char cAddress[256], cPort[10];
 					ListView_GetItemText(gui.hWndIpList, gui.nLastItem, 0, cAddress, sizeof(cAddress));
 					ListView_GetItemText(gui.hWndIpList, gui.nLastItem, 1, cPort, sizeof(cPort));
 					if(HIWORD(wParam) == BN_CLICKED)

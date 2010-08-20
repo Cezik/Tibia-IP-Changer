@@ -62,7 +62,7 @@ long Tools::readInteger(const char* key)
 /// </summary>
 std::string Tools::readString(const char* key)
 {
-	char buffer[MAX_PATH];
+	char buffer[4096];
 	GetPrivateProfileString(SECTION, key, "", buffer, sizeof(buffer), getFilePath(CONFIG_FILE).c_str());
 	return buffer;
 }
@@ -72,7 +72,7 @@ std::string Tools::readString(const char* key)
 /// </summary>
 std::string Tools::readStringFromFile(const char* fileName, const char* section, const char* key)
 {
-	char buffer[MAX_PATH];
+	char buffer[4096];
 	GetPrivateProfileString(section, key, "", buffer, sizeof(buffer), getFilePath(fileName).c_str());
 	return buffer;
 }
