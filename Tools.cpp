@@ -31,6 +31,7 @@ Tools::Tools()
 	setChangeTitleCmdLine(readBoolean("ChangeTibiaTitleCmdLine"));
 	setSupportForOTServList(readBoolean("SupportForOTServList"));
 	setShowToolTips(readBoolean("ShowToolTips"));
+	setURLToAddresses(readString("UpdateURL"));
 }
 
 Tools::~Tools()
@@ -82,11 +83,9 @@ std::string Tools::readStringFromFile(const char* fileName, const char* section,
 /// </summary>
 bool Tools::readBoolean(const char* key)
 {
-	long value = readInteger(key);
-	if(value == 1)
+	if(readInteger(key) > 0)
 		return true;
-	else
-		return false;
+	return false;
 }
 
 /// <summary>
@@ -94,10 +93,7 @@ bool Tools::readBoolean(const char* key)
 /// </summary>
 void Tools::replaceString(std::string& str, const std::string sought, const std::string replacement)
 {
-	size_t pos = 0;
-	size_t start = 0;
-	size_t soughtLen = sought.length();
-	size_t replaceLen = replacement.length();
+	size_t pos = 0, start = 0, soughtLen = sought.length(),	replaceLen = replacement.length();
 	while((pos = str.find(sought, start)) != std::string::npos)
 	{
 		str = str.substr(0, pos) + replacement + str.substr(pos + soughtLen);
@@ -732,84 +728,6 @@ bool Tools::loadFromXmlAddresses()
 /// </summary>
 bool Tools::updateXmlAddresses()
 {
-	xmlDocPtr doc = xmlParseFile(ADDRESSES_CHECK);
-	if(!doc)
-		return false;
-
-	xmlNodePtr p, root = xmlDocGetRootElement(doc);
-	if(xmlStrcmp(root->name,(const xmlChar*)SECTION) != 0)
-	{
-		xmlFreeDoc(doc);
-		return false;
-	}
-
-	p = root->children;
-	int cID = 0;
-	addressReading updateAddr[MAX_AMOUNT_OF_PROTOCOLS];
-	while(p)
-	{
-		std::string strVal;
-		int intVal;
-		if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
-		{
-			if(readXMLString(p, "Version", strVal))
-			{
-				updateAddr[cID].protocol = new char[strVal.size()+1];
-				strcpy(updateAddr[cID].protocol, strVal.c_str());
-				updateAddr[cID].isUsed = true;
-			}
-			else
-				updateAddr[cID].isUsed = false;
-			if(readXMLString(p, "rsaAddr", strVal))
-			{
-				sscanf(strVal.c_str(), "0x%X", &updateAddr[cID].rsaAddr);
-			}
-			if(readXMLString(p, "ipAddr", strVal))
-			{
-				sscanf(strVal.c_str(), "0x%X", &updateAddr[cID].ipAddr);
-			}
-			if(readXMLInteger(p, "loginServers", intVal))
-			{
-				updateAddr[cID].loginServers = (unsigned short)intVal;
-			}
-			cID++;
-		}
-		p = p->next;
-	}
-	xmlFreeDoc(doc);
-
-
-	doc = xmlNewDoc((const xmlChar*)"1.0");
-	doc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)SECTION, NULL);
-	xmlNodePtr listNode;
-
-	root = doc->children;
-
-	for(int i = 0; i < MAX_AMOUNT_OF_PROTOCOLS; i++)
-	{
-		if(updateAddr[i].isUsed)
-		{
-			char buffer[255];
-            listNode = xmlNewNode(NULL,(const xmlChar*)"Protocol");
-			xmlSetProp(listNode, (const xmlChar*) "Version", (const xmlChar*)updateAddr[i].protocol);
-			sprintf(buffer, "0x%X", updateAddr[i].rsaAddr);
-			xmlSetProp(listNode, (const xmlChar*) "rsaAddr", (const xmlChar*)buffer);
-			sprintf(buffer, "0x%X", updateAddr[i].ipAddr);
-			xmlSetProp(listNode, (const xmlChar*) "ipAddr", (const xmlChar*)buffer);
-			sprintf(buffer, "%i", updateAddr[i].loginServers);
-			xmlSetProp(listNode, (const xmlChar*) "loginServers", (const xmlChar*)buffer);
-			xmlAddChild(root, listNode);
-		}
-	}
-
-	if(xmlSaveFile(getFilePath(ADDRESSES_FILE).c_str(), doc))
-	{
-		xmlFreeDoc(doc);
-		return true;
-	}
-	else
-	{
-		xmlFreeDoc(doc);
-		return false;
-	}
+	/* TODO (#1#): Rewrite this function */
+	return false;
 }
