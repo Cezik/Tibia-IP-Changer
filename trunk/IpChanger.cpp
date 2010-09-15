@@ -180,7 +180,7 @@ BOOL CALLBACK ServerInfoProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 				case FD_WRITE:
 					if(tools.bSend)
 					{
-						unsigned char cPacket[8];
+						char cPacket[8];
 						cPacket[0] = 0x06;
 						cPacket[1] = 0x00;
 						cPacket[2] = 0xFF;
@@ -189,7 +189,7 @@ BOOL CALLBACK ServerInfoProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 						cPacket[5] = 'n';
 						cPacket[6] = 'f';
 						cPacket[7] = 'o';
-						send(tools.sSock, (const char*)cPacket, sizeof(cPacket), 0);
+						send(tools.sSock, cPacket, sizeof(cPacket), 0);
 						tools.bSend = false;
 					}
 					break;
