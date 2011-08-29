@@ -30,6 +30,7 @@
 #include <string>
 #include <stdio.h>
 #include <libxml/parser.h>
+#include <Tlhelp32.h>
 
 #include "resource.h"
 #include "IpChanger.h"
@@ -136,6 +137,9 @@ class Tools
 		addressReading rAddr[MAX_AMOUNT_OF_PROTOCOLS];
 
 		bool updateXmlAddresses();
+
+		DWORD GetModuleBase();
+		DWORD AlignAddress(DWORD address);
 
 	protected:
 		bool useOtherRSA, checkFromList, showMessageBox, changeTitleCmdLine, supportForOTServList, showToolTips;
