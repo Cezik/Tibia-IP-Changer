@@ -705,11 +705,25 @@ bool Tools::loadFromXmlAddresses()
 				rAddr[cID].isUsed = false;
 			if(readXMLString(p, "rsaAddr", strVal))
 			{
-				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].rsaAddr);
+				if(strcmp(rAddr[cID].protocol, "910") == 0)
+				{
+					DWORD tempAddress;
+					sscanf(strVal.c_str(), "0x%X", &tempAddress);
+					rAddr[cID].rsaAddr = AlignAddress(tempAddress);
+				}
+				else
+					sscanf(strVal.c_str(), "0x%X", &rAddr[cID].rsaAddr);
 			}
 			if(readXMLString(p, "ipAddr", strVal))
 			{
-				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].ipAddr);
+				if(strcmp(rAddr[cID].protocol, "910") == 0)
+				{
+					DWORD tempAddress;
+					sscanf(strVal.c_str(), "0x%X", &tempAddress);
+					rAddr[cID].ipAddr = AlignAddress(tempAddress);
+				}
+				else
+					sscanf(strVal.c_str(), "0x%X", &rAddr[cID].ipAddr);
 			}
 			if(readXMLInteger(p, "loginServers", intVal))
 			{
@@ -730,4 +744,37 @@ bool Tools::updateXmlAddresses()
 {
 	/* TODO (#1#): Rewrite this function */
 	return false;
+}
+
+DWORD Tools::GetModuleBase()
+{
+	MODULEENTRY32 moduleEntry = {0};
+	HANDLE snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
+	DWORD base = 0;
+ 
+	if(!snapShot)
+		return 0;
+ 
+	moduleEntry.dwSize = sizeof(moduleEntry);
+	BOOL currentModule = Module32First(snapShot, &moduleEntry);
+ 
+	if(currentModule)
+	{
+		static char hold[1000];
+		memcpy(hold, moduleEntry.szModule, strlen(moduleEntry.szModule) + 1);
+ 
+		if(std::string(hold).find(".exe") == std::string(hold).size() - 4)
+			base = (DWORD)moduleEntry.modBaseAddr;
+	}
+ 
+	CloseHandle(snapShot);
+	return base;
+}
+
+DWORD Tools::AlignAddress(DWORD address)
+{
+	static int base = (int)GetModuleBase();
+	static int XPBase = 0x400000;
+	address += (base - XPBase);
+	return address;
 }
