@@ -716,7 +716,7 @@ bool Tools::loadFromXmlAddresses()
 			}
 			if(readXMLString(p, "ipAddr", strVal))
 			{
-				if(strcmp(rAddr[cID].protocol, "910") == 0)
+				if(atoi(rAddr[cID].protocol) >= 910)
 				{
 					DWORD tempAddress;
 					sscanf(strVal.c_str(), "0x%X", &tempAddress);
