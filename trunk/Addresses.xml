@@ -25,9 +25,15 @@
 	<Protocol Version="822" rsaAddr="0x005A7610" ipAddr="0x00776CF0" loginServers="10"/>
 	<Protocol Version="821" rsaAddr="0x005A5610" ipAddr="0x00774CF0" loginServers="10"/>
 	<Protocol Version="820" rsaAddr="0x005A3610" ipAddr="0x00771CF0" loginServers="10"/>
+	<Protocol Version="811" rsaAddr="0x00597610" ipAddr="0x00763BB8" loginServers="10"/>
 	<Protocol Version="810" rsaAddr="0x00597610" ipAddr="0x00763BB8" loginServers="10"/>
 	<Protocol Version="800" rsaAddr="0x0075EAE8" ipAddr="0x00593610" loginServers="10"/>
 	<Protocol Version="792" rsaAddr="0x0058D620" ipAddr="0x00755E18" loginServers="5"/>
+	<Protocol Version="790" rsaAddr="0x0058D620" ipAddr="0x00755EC8" loginServers="5"/>
+	<Protocol Version="781" rsaAddr="0x00585620" ipAddr="0x0074A788" loginServers="5"/>
 	<Protocol Version="780" rsaAddr="0x00582620" ipAddr="0x00746710" loginServers="5"/>
+	<Protocol Version="772" rsaAddr="0x0055B620" ipAddr="0x00715368" loginServers="5"/>
 	<Protocol Version="760" rsaAddr="0x00" ipAddr="0x005EFB50" loginServers="5"/>
+	<Protocol Version="755" rsaAddr="0x00" ipAddr="0x005ED9A0" loginServers="5"/>
+	<Protocol Version="740" rsaAddr="0x00" ipAddr="0x005E8908" loginServers="5"/>
 </OTFans>
