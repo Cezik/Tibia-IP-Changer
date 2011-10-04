@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// OTFans.pl IP Changer - Developed by Czepek                                 //
+// Czepek's IP Changer - Developed by Czepek                                  //
 ////////////////////////////////////////////////////////////////////////////////
 // This program is free software; you can redistribute it and/or              //
 // modify it under the terms of the GNU General Public License                //
@@ -21,8 +21,8 @@
 #endif
 
 #define NAME "IP Changer"
-#define CURRENT_VERSION  1,0,8,7
-#define CURRENT_VERSION2 "1.0.8.7\0"
+#define CURRENT_VERSION  1,0,8,8
+#define CURRENT_VERSION2 "1.0.8.8\0"
 
 #define ID_STATIC -1
 
