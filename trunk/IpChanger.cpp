@@ -907,7 +907,10 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 					break;
 
 				case ID_MENU_UPDATE:
-					tools.updateXmlAddresses();
+					if(tools.updateXmlAddresses())
+						gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[72]);
+					else
+						gui.messageBox(MESSAGE_TYPE_FATAL_ERROR, NULL, tools.languageTable[73]);
 					break;
 
 				case ID_DLG_REFRESH_LIST:
