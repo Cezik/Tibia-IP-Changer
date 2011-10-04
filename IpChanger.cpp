@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// OTFans.pl IP Changer - Developed by Czepek                                 //
+// Czepek's IP Changer - Developed by Czepek                                  //
 ////////////////////////////////////////////////////////////////////////////////
 // This program is free software; you can redistribute it and/or              //
 // modify it under the terms of the GNU General Public License                //
@@ -803,7 +803,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			{
 				case NM_CLICK:
 					if(wParam == ID_DLG_LINK)
-						ShellExecute(NULL, "open", "http://otfans.pl/", NULL, NULL, SW_SHOW);
+						ShellExecute(NULL, "open", "http://czepekpage.pl/", NULL, NULL, SW_SHOW);
 					break;
 			}
 			break;

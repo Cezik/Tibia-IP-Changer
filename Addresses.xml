@@ -21,6 +21,7 @@
 	<Protocol Version="842" rsaAddr="0x005AF610" ipAddr="0x00785D30" loginServers="10"/>
 	<Protocol Version="841" rsaAddr="0x005AB610" ipAddr="0x00780CD0" loginServers="10"/>
 	<Protocol Version="840" rsaAddr="0x005AB610" ipAddr="0x0077FC48" loginServers="10"/>
+	<Protocol Version="831" rsaAddr="0x005AA610" ipAddr="0x0077AD88" loginServers="10"/>
 	<Protocol Version="830" rsaAddr="0x005AA610" ipAddr="0x0077AD88" loginServers="10"/>
 	<Protocol Version="822" rsaAddr="0x005A7610" ipAddr="0x00776CF0" loginServers="10"/>
 	<Protocol Version="821" rsaAddr="0x005A5610" ipAddr="0x00774CF0" loginServers="10"/>

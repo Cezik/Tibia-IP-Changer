@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// OTFans.pl IP Changer - Developed by Czepek                                 //
+// Czepek's IP Changer - Developed by Czepek                                  //
 ////////////////////////////////////////////////////////////////////////////////
 // This program is free software; you can redistribute it and/or              //
 // modify it under the terms of the GNU General Public License                //
@@ -19,19 +19,19 @@
 #include <windows.h>
 #include "resource.h"
 
-ID_ICON ICON DISCARDABLE "Icons/IpChanger.ico"
+ID_ICON ICON DISCARDABLE "../Icons/IpChanger.ico"
 
-ID_ICON_CLOSE BITMAP "Icons/close.bmp"
-ID_ICON_OPTIONS BITMAP "Icons/lightning.bmp"
-ID_ICON_IPLIST BITMAP "Icons/listicon.bmp"
-ID_ICON_TRAY BITMAP "Icons/world.bmp"
-ID_ICON_ADD BITMAP "Icons/add.bmp"
-ID_ICON_EDIT BITMAP "Icons/edit.bmp"
-ID_ICON_DELETE BITMAP "Icons/delete.bmp"
-ID_ICON_DELETE_ALL BITMAP "Icons/delete2.bmp"
-ID_ICON_INFORMATION BITMAP "Icons/information.bmp"
-ID_ICON_CHANGEIP BITMAP "Icons/hammer.bmp"
-ID_ICON_UPDATE BITMAP "Icons/update.bmp"
+ID_ICON_CLOSE BITMAP "../Icons/close.bmp"
+ID_ICON_OPTIONS BITMAP "../Icons/lightning.bmp"
+ID_ICON_IPLIST BITMAP "../Icons/listicon.bmp"
+ID_ICON_TRAY BITMAP "../Icons/world.bmp"
+ID_ICON_ADD BITMAP "../Icons/add.bmp"
+ID_ICON_EDIT BITMAP "../Icons/edit.bmp"
+ID_ICON_DELETE BITMAP "../Icons/delete.bmp"
+ID_ICON_DELETE_ALL BITMAP "../Icons/delete2.bmp"
+ID_ICON_INFORMATION BITMAP "../Icons/information.bmp"
+ID_ICON_CHANGEIP BITMAP "../Icons/hammer.bmp"
+ID_ICON_UPDATE BITMAP "../Icons/update.bmp"
 
 ID_MAIN_MENU MENU DISCARDABLE
 BEGIN
@@ -62,7 +62,7 @@ BEGIN
 	 AUTOCHECKBOX "Zmieñ tytu³ Tibii", ID_DLG_CHANGE_TITLE, 5, 37, 67, 8, WS_TABSTOP
 	 PUSHBUTTON "Zmieñ IP!", ID_DLG_CHANGE_IP, 5, 47, 50, 12
 	 PUSHBUTTON "Informacje", ID_DLG_SHOW_SERVER_INFO, 57, 47, 48, 12
-	 CONTROL "<a>OTFans.pl</a>", ID_DLG_LINK, "SysLink", WS_TABSTOP | WS_EX_TRANSPARENT | SS_NOTIFY, 40, 60, 40, 8
+	 CONTROL "<a>CzepekPage.pl</a>", ID_DLG_LINK, "SysLink", WS_TABSTOP | WS_EX_TRANSPARENT | SS_NOTIFY, 30, 60, 60, 8
 END
 
 ID_DLG_SERVER_INFO DIALOG DISCARDABLE  0, 0, 247, 166
@@ -148,12 +148,12 @@ VS_VERSION_INFO VERSIONINFO
 		BEGIN
 			BLOCK "041504b0"
 			BEGIN
-				VALUE "CompanyName", "OTFans.pl\0"
-				VALUE "FileDescription", "Official IP Changer of OTFans.pl for 'Tibia'\0"
+				VALUE "CompanyName", "CzepekPage.pl\0"
+				VALUE "FileDescription", "Official IP Changer of CzepekPage.pl for 'Tibia'\0"
 				VALUE "FileVersion", CURRENT_VERSION2
 				VALUE "InternalName", "IP Changer\0"
-				VALUE "LegalCopyright", "OTFans.pl\0"
-				VALUE "LegalTrademarks", "OTFans.pl\0"
+				VALUE "LegalCopyright", "CzepekPage.pl\0"
+				VALUE "LegalTrademarks", "CzepekPage.pl\0"
 				VALUE "OriginalFilename", "IP Changer\0"
 				VALUE "ProductName", "IP Changer\0"
 				VALUE "ProductVersion", CURRENT_VERSION2
