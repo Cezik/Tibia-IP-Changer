@@ -51,7 +51,7 @@ struct addressReading
 {
 	unsigned long rsaAddr;
 	unsigned long ipAddr;
-	unsigned short loginServers;
+	unsigned long loginServers;
 	char* protocol;
 	bool isUsed;
 };
@@ -69,16 +69,12 @@ class Tools
 		bool getSupportForOTServList() const {return supportForOTServList;}
 		bool getShowToolTips() const {return showToolTips;}
 
-		std::string getURLToAddresses() const {return urlToAddresses;}
-
 		void setUseOtherRSA(bool value){useOtherRSA = value;}
 		void setCheckFromList(bool value){checkFromList = value;}
 		void setShowMessageBox(bool value){showMessageBox = value;}
 		void setChangeTitleCmdLine(bool value){changeTitleCmdLine = value;}
 		void setSupportForOTServList(bool value){supportForOTServList = value;}
 		void setShowToolTips(bool value){showToolTips = value;}
-
-		void setURLToAddresses(std::string value){urlToAddresses = value;}
 
 		bool fileExists(const char* fileName);
 		std::string getFilePath(const char* fileName);
@@ -143,7 +139,6 @@ class Tools
 
 	protected:
 		bool useOtherRSA, checkFromList, showMessageBox, changeTitleCmdLine, supportForOTServList, showToolTips;
-		std::string urlToAddresses;
 };
 
 #endif
