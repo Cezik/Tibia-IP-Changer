@@ -52,7 +52,7 @@ bool Tools::fileExists(const char* fileName)
 /// <summary>
 /// Reads integer value from configuration file
 /// </summary>
-long Tools::readInteger(const char* key)
+int32_t Tools::readInteger(const char* key)
 {
 	return GetPrivateProfileInt(SECTION, key, -1, getFilePath(CONFIG_FILE).c_str());
 }
@@ -149,7 +149,7 @@ SOCKET Tools::createSocket(HWND hwnd)
 /// <summary>
 /// Adding IP and port to socket connection
 /// </summary>
-SOCKADDR_IN Tools::sSAddrCreate(const char* ipAddress, unsigned short iPort)
+SOCKADDR_IN Tools::sSAddrCreate(const char* ipAddress, uint16_t iPort)
 {
 	SOCKADDR_IN SA;
 	HOSTENT* HE = gethostbyname(ipAddress);
@@ -247,7 +247,7 @@ void Tools::StringToke(HWND hwnd, char* szBuffer)
 	 char* MapWidth = TEXT(languageTable[4]);
 	 char* MapHeight = TEXT(languageTable[4]);
 	 char* Motd = TEXT(languageTable[4]);
-	 unsigned long nSeconds = 0, nDays = 0, nHours = 0, nMinutes = 0, nHOut = 0, nMOut = 0, nSOut = 0;
+	 uint32_t nSeconds = 0, nDays = 0, nHours = 0, nMinutes = 0, nHOut = 0, nMOut = 0, nSOut = 0;
 	 token = strtok(szBuffer, cSeparator);
 
 	 while(token != NULL)
@@ -433,7 +433,7 @@ bool Tools::setRSA(HANDLE procHandle, const DWORD rsaAddr, const char newRsaKey[
 /// <summary>
 /// Changing IP of Tibia client
 /// </summary>
-bool Tools::changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddress, unsigned short maxLoginServers)
+bool Tools::changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddress, uint16_t maxLoginServers)
 {
 	DWORD addr = loginAddress;
 	for(int i = 0; i < maxLoginServers; i++)
@@ -449,7 +449,7 @@ bool Tools::changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddr
 /// <summary>
 /// Changing port of Tibia client
 /// </summary>
-bool Tools::changePort(HANDLE procHandle, unsigned short newPort, const DWORD loginAddress, unsigned short maxLoginServers)
+bool Tools::changePort(HANDLE procHandle, uint16_t newPort, const DWORD loginAddress, uint16_t maxLoginServers)
 {
 	DWORD addr = loginAddress;
 	for(int i = 0; i < maxLoginServers; i++)
@@ -465,7 +465,7 @@ bool Tools::changePort(HANDLE procHandle, unsigned short newPort, const DWORD lo
 /// <summary>
 /// Changing IP, port, RSA key and title of Tibia client
 /// </summary>
-bool Tools::setNewConnection(const char* newIP, unsigned short newPort, bool changeTitle)
+bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTitle)
 {
 	HWND tibiaWindow = FindWindow("TibiaClient", NULL);
 	if(tibiaWindow != NULL)
@@ -480,10 +480,12 @@ bool Tools::setNewConnection(const char* newIP, unsigned short newPort, bool cha
 		char* clientVersion;
 		clientVersion = new char[getClientVersion(procHandle).size()];
 		strcpy(clientVersion, getClientVersion(procHandle).c_str());
+		int cVersion = atoi(clientVersion);
+		
 
 		for(int i = 0; i <= MAX_AMOUNT_OF_PROTOCOLS; i++)
 		{
-			if(strcmp(clientVersion, rAddr[i].protocol) == 0)
+			if(cVersion == atoi(rAddr[i].protocol))
 			{
 				if(rAddr[i].isUsed)
 				{
@@ -704,7 +706,7 @@ bool Tools::loadFromXmlAddresses()
 				rAddr[cID].isUsed = false;
 			if(readXMLString(p, "rsaAddr", strVal))
 			{
-				if(strcmp(rAddr[cID].protocol, "910") == 0)
+				if(atoi(rAddr[cID].protocol) >= 910)
 				{
 					DWORD tempAddress;
 					sscanf(strVal.c_str(), "0x%X", &tempAddress);
@@ -726,7 +728,7 @@ bool Tools::loadFromXmlAddresses()
 			}
 			if(readXMLInteger(p, "loginServers", intVal))
 			{
-				rAddr[cID].loginServers = (unsigned short)intVal;
+				rAddr[cID].loginServers = (uint16_t)intVal;
 			}
 			cID++;
 		}

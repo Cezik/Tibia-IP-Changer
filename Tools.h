@@ -49,9 +49,9 @@
 
 struct addressReading
 {
-	unsigned long rsaAddr;
-	unsigned long ipAddr;
-	unsigned long loginServers;
+	uint32_t rsaAddr;
+	uint32_t ipAddr;
+	uint32_t loginServers;
 	char* protocol;
 	bool isUsed;
 };
@@ -79,7 +79,7 @@ class Tools
 		bool fileExists(const char* fileName);
 		std::string getFilePath(const char* fileName);
 
-		long readInteger(const char* key);
+		int32_t readInteger(const char* key);
 		std::string readString(const char* key);
 		std::string readStringFromFile(const char* fileName, const char* section, const char* key);
 		bool readBoolean(const char* key);
@@ -89,7 +89,7 @@ class Tools
 		std::string WStringToString(const std::wstring s);
 
 		SOCKET createSocket(HWND hwnd);
-		SOCKADDR_IN sSAddrCreate(const char* ipAddress, unsigned short iPort);
+		SOCKADDR_IN sSAddrCreate(const char* ipAddress, uint16_t iPort);
 		void getFileVersion(char* fileName, VS_FIXEDFILEINFO* pvsf);
 
 		bool addSupportForOTServList();
@@ -102,9 +102,9 @@ class Tools
 		bool writeByte(HANDLE procHandle, DWORD lpBaseAddress, const int lpBuffer, const int nSize);
 
 		bool setRSA(HANDLE procHandle, const DWORD rsaAddr, const char newRsaKey[]);
-		bool changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddress, unsigned short maxLoginServers);
-		bool changePort(HANDLE procHandle, unsigned short newPort, const DWORD loginAddress, unsigned short maxLoginServers);
-		bool setNewConnection(const char* newIP, unsigned short newPort, bool changeTitle);
+		bool changeIP(HANDLE procHandle, const char* newIP, const DWORD loginAddress, uint16_t maxLoginServers);
+		bool changePort(HANDLE procHandle, uint16_t newPort, const DWORD loginAddress, uint16_t maxLoginServers);
+		bool setNewConnection(const char* newIP, uint16_t newPort, bool changeTitle);
 
 		bool utf8ToLatin1(char* intext, std::string& outtext);
 		bool readXMLString(xmlNodePtr node, const char* tag, std::string& value);
