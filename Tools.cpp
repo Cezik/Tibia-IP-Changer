@@ -489,15 +489,16 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 			{
 				if(rAddr[i].isUsed)
 				{
-					if(atoi(rAddr[cID].protocol) >= 910)
+					DWORD rsaAddr = 0x00, ipAddr = 0x00;
+					if(atoi(rAddr[i].protocol) >= 910)
 					{
-						const DWORD rsaAddr = AlignAddress(pID, rAddr[i].rsaAddr);
-						const DWORD ipAddr = AlignAddress(pID, rAddr[i].ipAddr);
+						rsaAddr = AlignAddress(pID, rAddr[i].rsaAddr);
+						ipAddr = AlignAddress(pID, rAddr[i].ipAddr);
 					}
 					else
 					{
-						const DWORD rsaAddr = rAddr[i].rsaAddr;
-						const DWORD ipAddr = rAddr[i].ipAddr;
+						rsaAddr = rAddr[i].rsaAddr;
+						ipAddr = rAddr[i].ipAddr;
 					}
 					const short loginServers = rAddr[i].loginServers;
 					if(rsaAddr != 0x00)
