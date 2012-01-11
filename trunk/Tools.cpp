@@ -489,8 +489,16 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 			{
 				if(rAddr[i].isUsed)
 				{
-					const DWORD rsaAddr = rAddr[i].rsaAddr;
-					const DWORD ipAddr = rAddr[i].ipAddr;
+					if(atoi(rAddr[cID].protocol) >= 910)
+					{
+						const DWORD rsaAddr = AlignAddress(pID, rAddr[i].rsaAddr);
+						const DWORD ipAddr = AlignAddress(pID, rAddr[i].ipAddr);
+					}
+					else
+					{
+						const DWORD rsaAddr = rAddr[i].rsaAddr;
+						const DWORD ipAddr = rAddr[i].ipAddr;
+					}
 					const short loginServers = rAddr[i].loginServers;
 					if(rsaAddr != 0x00)
 					{
@@ -706,25 +714,11 @@ bool Tools::loadFromXmlAddresses()
 				rAddr[cID].isUsed = false;
 			if(readXMLString(p, "rsaAddr", strVal))
 			{
-				if(atoi(rAddr[cID].protocol) >= 910)
-				{
-					DWORD tempAddress;
-					sscanf(strVal.c_str(), "0x%X", &tempAddress);
-					rAddr[cID].rsaAddr = AlignAddress(tempAddress);
-				}
-				else
-					sscanf(strVal.c_str(), "0x%X", &rAddr[cID].rsaAddr);
+				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].rsaAddr);
 			}
 			if(readXMLString(p, "ipAddr", strVal))
 			{
-				if(atoi(rAddr[cID].protocol) >= 910)
-				{
-					DWORD tempAddress;
-					sscanf(strVal.c_str(), "0x%X", &tempAddress);
-					rAddr[cID].ipAddr = AlignAddress(tempAddress);
-				}
-				else
-					sscanf(strVal.c_str(), "0x%X", &rAddr[cID].ipAddr);
+				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].ipAddr);
 			}
 			if(readXMLInteger(p, "loginServers", intVal))
 			{
@@ -832,10 +826,10 @@ bool Tools::updateXmlAddresses()
 	return false;
 }
 
-DWORD Tools::GetModuleBase()
+DWORD Tools::GetModuleBase(DWORD processID)
 {
 	MODULEENTRY32 moduleEntry = {0};
-	HANDLE snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
+	HANDLE snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, processID);
 	DWORD base = 0;
  
 	if(!snapShot)
@@ -857,9 +851,9 @@ DWORD Tools::GetModuleBase()
 	return base;
 }
 
-DWORD Tools::AlignAddress(DWORD address)
+DWORD Tools::AlignAddress(DWORD processID, DWORD address)
 {
-	static int base = (int)GetModuleBase();
+	static int base = (int)GetModuleBase(processID);
 	static int XPBase = 0x400000;
 	address += (base - XPBase);
 	return address;
