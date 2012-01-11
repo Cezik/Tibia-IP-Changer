@@ -389,7 +389,7 @@ std::string Tools::getClientVersion(HANDLE procHandle)
 	char filePath[MAX_PATH], fileVersion[5];
 	GetModuleFileNameEx(procHandle, NULL, filePath, sizeof(filePath));
 	getFileVersion(filePath, &vsf);
-	sprintf(fileVersion, "%u%u%u", vsf.dwFileVersionMS >> 16, vsf.dwFileVersionMS & 0xFFFF, vsf.dwFileVersionLS >> 16);
+	sprintf(fileVersion, "%u%u%u", (int)vsf.dwFileVersionMS >> 16, (int)vsf.dwFileVersionMS & 0xFFFF, (int)vsf.dwFileVersionLS >> 16);
 	return fileVersion;
 }
 
@@ -481,7 +481,7 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 		clientVersion = new char[getClientVersion(procHandle).size()];
 		strcpy(clientVersion, getClientVersion(procHandle).c_str());
 		int cVersion = atoi(clientVersion);
-		
+
 
 		for(int i = 0; i <= MAX_AMOUNT_OF_PROTOCOLS; i++)
 		{
@@ -832,22 +832,22 @@ DWORD Tools::GetModuleBase(DWORD processID)
 	MODULEENTRY32 moduleEntry = {0};
 	HANDLE snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, processID);
 	DWORD base = 0;
- 
+
 	if(!snapShot)
 		return 0;
- 
+
 	moduleEntry.dwSize = sizeof(moduleEntry);
 	BOOL currentModule = Module32First(snapShot, &moduleEntry);
- 
+
 	if(currentModule)
 	{
 		static char hold[1000];
 		memcpy(hold, moduleEntry.szModule, strlen(moduleEntry.szModule) + 1);
- 
+
 		if(std::string(hold).find(".exe") == std::string(hold).size() - 4)
 			base = (DWORD)moduleEntry.modBaseAddr;
 	}
- 
+
 	CloseHandle(snapShot);
 	return base;
 }
