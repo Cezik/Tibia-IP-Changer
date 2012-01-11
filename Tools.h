@@ -134,8 +134,8 @@ class Tools
 
 		bool updateXmlAddresses();
 
-		DWORD GetModuleBase();
-		DWORD AlignAddress(DWORD address);
+		DWORD GetModuleBase(DWORD processID);
+		DWORD AlignAddress(DWORD processID, DWORD address);
 
 	protected:
 		bool useOtherRSA, checkFromList, showMessageBox, changeTitleCmdLine, supportForOTServList, showToolTips;
