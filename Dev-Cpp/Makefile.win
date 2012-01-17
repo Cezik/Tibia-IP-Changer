@@ -7,11 +7,11 @@ WINDRES = windres.exe
 RES  = Obj/IPChanger_private.res
 OBJ  = Obj/IpChanger.o Obj/WinGUI.o Obj/Tools.o $(RES)
 LINKOBJ  = Obj/IpChanger.o Obj/WinGUI.o Obj/Tools.o $(RES)
-LIBS =  -L"lib" -mwindows -lcomctl32 -lversion -lpsapi -lwsock32 -lshlwapi -lxml2 -s  
-INCS =  -I"include" 
-CXXINCS =  -I"include" 
+LIBS =  -L"C:/Users/Mietek/Downloads/Dev-Cpp/Dev-Cpp/lib" -mwindows -lcomctl32 -lversion -lpsapi -lwsock32 -lshlwapi -lxml2 -s  
+INCS =  -I"C:/Users/Mietek/Downloads/Dev-Cpp/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Users/Mietek/Downloads/Dev-Cpp/Dev-Cpp/include" 
 BIN  = IPChanger.exe
-CXXFLAGS = $(CXXINCS)  
+CXXFLAGS = $(CXXINCS) -D_WIN32_IE=0x0501 -D_WIN32_WINNT=0x0501  
 CFLAGS = $(INCS)  
 RM = rm -f
 
