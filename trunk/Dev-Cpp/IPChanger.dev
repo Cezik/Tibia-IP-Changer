@@ -11,7 +11,7 @@ PrivateResource=IPChanger_private.rc
 ResourceIncludes=
 MakeIncludes=
 Compiler=
-CppCompiler=
+CppCompiler=-D_WIN32_IE=0x0501_@@_-D_WIN32_WINNT=0x0501_@@_
 Linker=-lcomctl32_@@_-lversion_@@_-lpsapi_@@_-lwsock32_@@_-lshlwapi_@@_-lxml2_@@_-s_@@_
 IsCpp=1
 Icon=
