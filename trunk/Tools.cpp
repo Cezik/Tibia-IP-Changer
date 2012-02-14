@@ -478,10 +478,10 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 			return false;
 
 		char* clientVersion;
-		clientVersion = new char[getClientVersion(procHandle).size()];
-		strcpy(clientVersion, getClientVersion(procHandle).c_str());
+		std::string cVer = getClientVersion(procHandle);
+		clientVersion = new char[cVer.size() + 1];
+		strcpy(clientVersion, cVer.c_str());
 		int cVersion = atoi(clientVersion);
-
 
 		for(int i = 0; i <= MAX_AMOUNT_OF_PROTOCOLS; i++)
 		{
@@ -500,7 +500,7 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 						rsaAddr = rAddr[i].rsaAddr;
 						ipAddr = rAddr[i].ipAddr;
 					}
-					const short loginServers = rAddr[i].loginServers;
+					const uint16_t loginServers = rAddr[i].loginServers;
 					if(rsaAddr != 0x00)
 					{
 						if(getUseOtherRSA())
@@ -546,8 +546,8 @@ bool Tools::utf8ToLatin1(char* intext, std::string& outtext)
 	if(inlen == 0)
 		return false;
 	size_t outlen = inlen*2;
-	unsigned char* outbuf = new unsigned char[outlen];
-	int res = UTF8Toisolat1(outbuf, (int*)&outlen, (unsigned char*)intext, (int*)&inlen);
+	uint8_t* outbuf = new uint8_t[outlen];
+	int res = UTF8Toisolat1(outbuf, (int*)&outlen, (uint8_t*)intext, (int*)&inlen);
 	if(res < 0)
 	{
 		delete[] outbuf;
