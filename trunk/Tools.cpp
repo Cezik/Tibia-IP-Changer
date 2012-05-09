@@ -18,6 +18,15 @@
 
 #include "Tools.h"
 #include "WinGUI.h"
+#include <boost/array.hpp>
+#include <boost/asio.hpp>
+
+using boost::asio::ip::tcp;
+
+std::size_t completion(const boost::system::error_code& error, std::size_t bytes_transfered)
+{
+	return ! error;
+}
 
 extern WinGUI gui;
 
@@ -709,92 +718,24 @@ bool Tools::loadFromXmlAddresses()
 /// </summary>
 bool Tools::updateXmlAddresses()
 {
-	xmlDocPtr doc = xmlParseFile(ADDRESSES_CHECK);
-	if(!doc)
-		return false;
+	boost::asio::io_service io_service;
+	boost::asio::ip::address addr = boost::asio::ip::address::from_string("216.34.181.65");
+	boost::asio::ip::tcp::endpoint endpoint(addr, 80);
+	tcp::socket socket(io_service);
+	socket.connect(endpoint);
+	boost::asio::streambuf request;
+	std::ostream requestStream(&request);
+	requestStream << "GET /viewvc/czepekipchanger/trunk/Addresses.xml?revision=64&content-type=text/plain HTTP/1.1\r\n"
+					<< "Connection: Keep-Alive\r\n"
+					<< "Host: czepekipchanger.svn.sourceforge.net\r\n\r\n";
 
-	xmlNodePtr p, root = xmlDocGetRootElement(doc);
+	boost::asio::write(socket, request);
+	boost::asio::streambuf respond;
+	boost::system::error_code ec;
+	boost::asio::read(socket, respond, completion, ec);
 
-	if(xmlStrcmp(root->name,(const xmlChar*)SECTION) != 0)
-	{
-		xmlFreeDoc(doc);
-		return false;
-	}
-
-	p = root->children;
-	int cID = 0;
-	addressReading updateAddr[MAX_AMOUNT_OF_PROTOCOLS];
-	while(p)
-	{
-		std::string strVal;
-		if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
-		{
-			if(readXMLString(p, "Version", strVal))
-			{
-				updateAddr[cID].protocol = new char[strVal.size() + 1];
-				strcpy(updateAddr[cID].protocol, strVal.c_str());
-				updateAddr[cID].isUsed = true;
-			}
-			else
-				updateAddr[cID].isUsed = false;
-
-			if(readXMLString(p, "rsaAddr", strVal))
-			{
-				sscanf(strVal.c_str(), "0x%X", &updateAddr[cID].rsaAddr);
-			}
-
-			if(readXMLString(p, "ipAddr", strVal))
-			{
-				sscanf(strVal.c_str(), "0x%X", &updateAddr[cID].ipAddr);
-			}
-
-			if(readXMLString(p, "loginServers", strVal))
-			{
-				sscanf(strVal.c_str(), "%i", &updateAddr[cID].loginServers);
-			}
-
-			cID++;
-		}
-		p = p->next;
-	}
-
-	xmlFreeDoc(doc);
-
-	doc = xmlNewDoc((const xmlChar*)"1.0");
-	doc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)SECTION, NULL);
-	xmlNodePtr listNode;
-	root = doc->children;
-
-	for(int i = 0; i < MAX_AMOUNT_OF_PROTOCOLS; i++)
-	{
-		if(updateAddr[i].isUsed)
-		{
-			char* buffer = new char[255];
-			listNode = xmlNewNode(NULL,(const xmlChar*)"Protocol");
-			xmlSetProp(listNode, (const xmlChar*) "Version", (const xmlChar*)updateAddr[i].protocol);
-			sprintf(buffer, "0x%X", updateAddr[i].rsaAddr);
-			xmlSetProp(listNode, (const xmlChar*) "rsaAddr", (const xmlChar*)buffer);
-			sprintf(buffer, "0x%X", updateAddr[i].ipAddr);
-			xmlSetProp(listNode, (const xmlChar*) "ipAddr", (const xmlChar*)buffer);
-			sprintf(buffer, "%i", updateAddr[i].loginServers);
-			xmlSetProp(listNode, (const xmlChar*) "loginServers", (const xmlChar*)buffer);
-			xmlAddChild(root, listNode);
-		}
-		else
-			break;
-	}
-
-	if(xmlSaveFile(getFilePath(ADDRESSES_FILE).c_str(), doc))
-	{
-		xmlFreeDoc(doc);
-		return true;
-	}
-	else
-	{
-		xmlFreeDoc(doc);
-		return false;
-	}
-
+	std::cout << &respond << std::endl;
+	/* TODO (Czepek#5#): Parse "respond" and store addresses to make finally works updater */
 	return false;
 }
 
