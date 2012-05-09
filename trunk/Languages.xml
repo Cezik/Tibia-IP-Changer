@@ -1,79 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Languages>
 	<Language Name="Polish">
-		<String ID="1" Value="Nie znaleziono zadnego klienta Tibii!\nUpewnij sie, czy aby na pewno wlaczyles Tibie."/>
-		<String ID="2" Value="Protokol jest nie obslugiwany!\nProsze o skontaktowanie sie z autorami programu w celu wyjasnienia tego bledu."/>
-		<String ID="3" Value="Czy, aby na pewno skasowac serwer z listy?"/>
+		<String ID="1" Value="Nie znaleziono #380;adnego klienta Tibii!\nUpewnij si#281;, czy aby na pewno w#322;#261;czy#322;e#347; Tibi#281;."/>
+		<String ID="2" Value="Protok#243;#322; jest nie obs#322;ugiwany!\nProsz#281; o skontaktowanie si#281; z autorami programu w celu wyja#347;nienia tego b#322;#281;du."/>
+		<String ID="3" Value="Czy, aby na pewno skasowa#263; serwer z listy?"/>
 		<String ID="4" Value="Nie znaleziono"/>
-		<String ID="5" Value="Serwer jest wylaczony!"/>
-		<String ID="6" Value="Nie mozna pobrac informacji o serwerze!"/>
+		<String ID="5" Value="Serwer jest wy#322;#261;czony!"/>
+		<String ID="6" Value="Nie mo#380;na pobra#263; informacji o serwerze!"/>
 		<String ID="7" Value="Pobieranie informacji o %s:%s"/>
-		<String ID="8" Value="Utworzono polaczenie!"/>
-		<String ID="9" Value="Nie mozna utworzyc polaczenia!"/>
+		<String ID="8" Value="Utworzono po#322;#261;czenie!"/>
+		<String ID="9" Value="Nie mo#380;na utworzy#263; po#322;#261;czenia!"/>
 		<String ID="10" Value="Adres IP"/>
-		<String ID="11" Value="Czy, aby na pewno skasowac WSZYSTKIE serwery z listy?"/>
-		<String ID="12" Value="Pokaz okno"/>
+		<String ID="11" Value="Czy, aby na pewno skasowa#263; WSZYSTKIE serwery z listy?"/>
+		<String ID="12" Value="Poka#380; okno"/>
 		<String ID="13" Value="Ukryj okno"/>
-		<String ID="14" Value="Wyjscie"/>
+		<String ID="14" Value="Wyj#347;cie"/>
 		<String ID="15" Value="Lista IP"/>
-		<String ID="16" Value="Zmien IP"/>
+		<String ID="16" Value="Zmie#324; IP"/>
 		<String ID="17" Value="Informacje"/>
 		<String ID="18" Value="Edytuj serwer"/>
-		<String ID="19" Value="Usun serwer"/>
-		<String ID="20" Value="Usun wszystkie serwery"/>
+		<String ID="19" Value="Usu#324; serwer"/>
+		<String ID="20" Value="Usu#324; wszystkie serwery"/>
 		<String ID="21" Value="Dodaj serwer"/>
 		<String ID="22" Value="Zamknij okno"/>
-		<String ID="23" Value="Wiadomosc dnia (MOTD):"/>
-		<String ID="24" Value="Wielkosc:"/>
+		<String ID="23" Value="Wiadomo#347;#263; dnia (MOTD):"/>
+		<String ID="24" Value="Wielko#347;#263;:"/>
 		<String ID="25" Value="Nazwa mapy:"/>
 		<String ID="26" Value="Autor mapy:"/>
-		<String ID="27" Value="Potworow:"/>
+		<String ID="27" Value="Potwor#243;w:"/>
 		<String ID="28" Value="Rekord graczy ON-Line:"/>
 		<String ID="29" Value="Graczy ON-Line:"/>
 		<String ID="30" Value="E-Mail:"/>
-		<String ID="31" Value="Wlasciciel:"/>
+		<String ID="31" Value="W#322;a#347;ciciel:"/>
 		<String ID="32" Value="Website:"/>
 		<String ID="33" Value="Nazwa serwera:"/>
-		<String ID="34" Value="Polozenie:"/>
-		<String ID="35" Value="Protokol:"/>
+		<String ID="34" Value="Po#322;o#380;enie:"/>
+		<String ID="35" Value="Protok#243;#322;:"/>
 		<String ID="36" Value="Opcje"/>
-		<String ID="37" Value="IP zostalo zmienione!\nUzyto argumentow(IP:Port): %s:%s"/>
-		<String ID="38" Value="Zly parametr w linii argumentow!\nUzycie: IPChanger {-i lub -ip} oraz {-p lub -port}"/>
+		<String ID="37" Value="IP zosta#322;o zmienione!\nU#380;yto argument#243;w(IP:Port): %s:%s"/>
+		<String ID="38" Value="Z#322;y parametr w linii argument#243;w!\nU#380;ycie: IPChanger {-i lub -ip} oraz {-p lub -port}"/>
 		<String ID="39" Value="Brak parametru dla: '%s'"/>
-		<String ID="40" Value="IP zostalo zmienione!\nUzyto argumentow(IP:Port): %s:%s\nSerwer jest pod protokol: %s"/>
-		<String ID="41" Value="Nie mozna zladowac kodu RSA!"/>
-		<String ID="42" Value="Nie mozna zaladowac adresow z pliku: %s!"/>
-		<String ID="43" Value="Nie mozna pobrac informacji o serwerze, gdyz nie ma wpisanego adresu serwera!"/>
-		<String ID="44" Value="Przycisk, ktory zmienia adres IP oraz port otwartego klienta Tibia"/>
-		<String ID="45" Value="Przycisk, ktory pobiera informacje o serwerze."/>
-		<String ID="46" Value="Jezeli zaznaczone to tytul Tibii zostanie zmieniony"/>
+		<String ID="40" Value="IP zosta#322;o zmienione!\nU#380;yto argument#243;w(IP:Port): %s:%s\nSerwer jest pod protok#243;#322;: %s"/>
+		<String ID="41" Value="Nie mo#380;na z#322;adowa#263; kodu RSA!"/>
+		<String ID="42" Value="Nie mo#380;na za#322;adowa#263; adres#243;w z pliku: %s!"/>
+		<String ID="43" Value="Nie mo#380;na pobra#263; informacji o serwerze, gdy#380; nie ma wpisanego adresu serwera!"/>
+		<String ID="44" Value="Przycisk, kt#243;ry zmienia adres IP oraz port otwartego klienta Tibia"/>
+		<String ID="45" Value="Przycisk, kt#243;ry pobiera informacje o serwerze."/>
+		<String ID="46" Value="Je#380;eli zaznaczone to tytu#322; Tibii zostanie zmieniony"/>
 		<String ID="47" Value="Adres IP serwera"/>
-		<String ID="48" Value="Kliknij, aby przejsc na oficjalna strone IP Changera!"/>
+		<String ID="48" Value="Kliknij, aby przej#347;#263; na stron#281; IP Changera!"/>
 		<String ID="49" Value="Klucz dla OpenTibia"/>
-		<String ID="50" Value="Pokaz okno potwierdzajace zmiane IP"/>
-		<String ID="51" Value="Dodawaj IP do ostatnich adresow podczas zmiany poprzez linie komend"/>
-		<String ID="52" Value="Support dla OTServList.org (otserv://adres ip/port/protokol)"/>
-		<String ID="53" Value="Jezeli wlaczone to beda pokazywane okienka z informacjami (Wymagane ponowne uruchomienie programu)"/>
+		<String ID="50" Value="Poka#380; okno potwierdzaj#261;ce zmian#281; IP"/>
+		<String ID="51" Value="Dodawaj IP do ostatnich adres#243;w podczas zmiany poprzez lini#281; komend"/>
+		<String ID="52" Value="Support dla OTServList.org (otserv://adres ip/port/protok#243;#322;)"/>
+		<String ID="53" Value="Je#380;eli w#322;#261;czone to b#281;d#261; pokazywane okienka z informacjami (Wymagane ponowne uruchomienie programu)"/>
 		<String ID="54" Value="Port serwera"/>
-		<String ID="55" Value="Przycisk, ktory odswieza liste adresow, ktora jest obok."/>
+		<String ID="55" Value="Przycisk, kt#243;ry od#347;wie#380;a list#281; adres#243;w, kt#243;ra jest obok."/>
 		<String ID="56" Value="= Port"/>
-		<String ID="57" Value="Zmien tytul Tibii"/>
-		<String ID="58" Value="Zmien IP!"/>
+		<String ID="57" Value="Zmie#324; tytu#322; Tibii"/>
+		<String ID="58" Value="Zmie#324; IP!"/>
 		<String ID="59" Value="OpenTibia"/>
 		<String ID="60" Value="Zapisz"/>
 		<String ID="61" Value="Wczytaj"/>
-		<String ID="62" Value="Uzyj innego klucza"/>
-		<String ID="63" Value="Uzyj wpisanego"/>
+		<String ID="62" Value="U#380;yj innego klucza"/>
+		<String ID="63" Value="U#380;yj wpisanego"/>
 		<String ID="64" Value="= IP"/>
 		<String ID="65" Value="= Wersja klienta"/>
-		<String ID="66" Value="Pokaz okno z informacja po zmianie adresow"/>
-		<String ID="67" Value="Zmien nazwe Tibii"/>
-		<String ID="68" Value="Dodaj adres do ostatnich serwerow"/>
+		<String ID="66" Value="Poka#380; okno z informacj#261; po zmianie adres#243;w"/>
+		<String ID="67" Value="Zmie#324; nazw#281; Tibii"/>
+		<String ID="68" Value="Dodaj adres do ostatnich serwer#243;w"/>
 		<String ID="69" Value="Support dla OTServlist.org"/>
 		<String ID="70" Value="Pokazuj okna z informacjami"/>
 		<String ID="71" Value="Aktualizacja"/>
-		<String ID="72" Value="Adresy zostaly zaktualizowane!\nProsze uruchomic program ponownie."/>
-		<String ID="73" Value="Nie mozna zapisac zaktualizowanych adresow!"/>
+		<String ID="72" Value="Adresy zosta#322;y zaktualizowane!\nProsz#281; uruchomi#263; program ponownie."/>
+		<String ID="73" Value="Nie mo#380;na zapisa#263; zaktualizowanych adres#243;w!"/>
 	</Language>
 	<Language Name="English">
 		<String ID="1" Value="Tibia Window not found!"/>
