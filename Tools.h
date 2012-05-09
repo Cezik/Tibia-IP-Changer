@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <libxml/parser.h>
 #include <Tlhelp32.h>
+#include <list>
 
 #include "resource.h"
 #include "IpChanger.h"
@@ -44,7 +45,7 @@
 #define CONFIG_FILE "IPChanger.ini"
 #define SERVER_LIST_FILE "IPList.xml"
 #define ADDRESSES_FILE "Addresses.xml"
-#define LANGUAGE_FILE "Language.ini"
+#define LANGUAGE_FILE "Languages.xml"
 #define SECTION "OTFans"
 
 struct addressReading
@@ -54,6 +55,12 @@ struct addressReading
 	uint32_t loginServers;
 	char* protocol;
 	bool isUsed;
+};
+
+struct languageTable_s
+{
+	char* language[25];
+	char languageStrings[LANGUAGE_STRINGS+1][512];
 };
 
 class Tools
@@ -81,7 +88,6 @@ class Tools
 
 		int32_t readInteger(const char* key);
 		std::string readString(const char* key);
-		std::string readStringFromFile(const char* fileName, const char* section, const char* key);
 		bool readBoolean(const char* key);
 
 		void replaceString(std::string& str, const std::string sought, const std::string replacement);
@@ -111,7 +117,7 @@ class Tools
 		bool readXMLInteger(xmlNodePtr node, const char* tag, int& value);
 
 		bool loadFromXmlIpList();
-		bool loadLanguageStrings(const char* fileName);
+		bool setLanguage(const char* languageName);
 
 		std::string getExeDir();
 
@@ -136,6 +142,10 @@ class Tools
 
 		DWORD GetModuleBase(DWORD processID);
 		DWORD AlignAddress(DWORD processID, DWORD address);
+
+		bool loadLanguageStringsFromXML();
+		std::list<languageTable_s> languageList;
+		std::string m_defaultLanguage;
 
 	protected:
 		bool useOtherRSA, checkFromList, showMessageBox, changeTitleCmdLine, supportForOTServList, showToolTips;

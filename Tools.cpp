@@ -31,6 +31,7 @@ Tools::Tools()
 	setChangeTitleCmdLine(readBoolean("ChangeTibiaTitleCmdLine"));
 	setSupportForOTServList(readBoolean("SupportForOTServList"));
 	setShowToolTips(readBoolean("ShowToolTips"));
+	m_defaultLanguage = readString("Default Language");
 }
 
 Tools::~Tools()
@@ -64,16 +65,6 @@ std::string Tools::readString(const char* key)
 {
 	char buffer[4096];
 	GetPrivateProfileString(SECTION, key, "", buffer, sizeof(buffer), getFilePath(CONFIG_FILE).c_str());
-	return buffer;
-}
-
-/// <summary>
-/// Reads string value from *.ini file
-/// </summary>
-std::string Tools::readStringFromFile(const char* fileName, const char* section, const char* key)
-{
-	char buffer[4096];
-	GetPrivateProfileString(section, key, "", buffer, sizeof(buffer), getFilePath(fileName).c_str());
 	return buffer;
 }
 
@@ -634,26 +625,6 @@ bool Tools::loadFromXmlIpList()
 }
 
 /// <summary>
-/// Loading language file with strings
-/// </summary>
-bool Tools::loadLanguageStrings(const char* fileName)
-{
-	if(!fileExists(fileName))
-		return false;
-
-	for(int i = 1; i <= LANGUAGE_STRINGS; i++)
-	{
-		char key[5];
-		_itoa(i, key, 10);
-		std::string str = readStringFromFile(fileName, "Language", key);
-		replaceString(str, "\\n", "\xa");
-		strcpy(languageTable[i], str.c_str());
-	}
-
-	return true;
-}
-
-/// <summary>
 /// Returns a path where is *.exe file
 /// </summary>
 std::string Tools::getExeDir()
@@ -827,6 +798,9 @@ bool Tools::updateXmlAddresses()
 	return false;
 }
 
+/// <summary>
+/// Gets process module base address
+/// </summary>
 DWORD Tools::GetModuleBase(DWORD processID)
 {
 	MODULEENTRY32 moduleEntry = {0};
@@ -852,10 +826,91 @@ DWORD Tools::GetModuleBase(DWORD processID)
 	return base;
 }
 
+/// <summary>
+/// Align address to the address
+/// </summary>
 DWORD Tools::AlignAddress(DWORD processID, DWORD address)
 {
 	static int base = (int)GetModuleBase(processID);
 	static int XPBase = 0x400000;
 	address += (base - XPBase);
 	return address;
+}
+
+/// <summary>
+/// Loads language string from XML file
+/// </summary>
+bool Tools::loadLanguageStringsFromXML()
+{
+	xmlDocPtr doc = xmlParseFile(getFilePath(LANGUAGE_FILE).c_str());
+	if(!doc)
+		return false;
+
+	xmlNodePtr root, p, childNode;
+	root = xmlDocGetRootElement(doc);
+	if(xmlStrcmp(root->name,(const xmlChar*)"Languages") != 0)
+	{
+		xmlFreeDoc(doc);
+		return false;
+	}
+
+	p = root->children;
+	while(p)
+	{
+		std::string strVal;
+		int intVal;
+		languageTable_s table;
+		if(xmlStrcmp(p->name, (const xmlChar*)"Language") == 0)
+		{
+			if(readXMLString(p, "Name", strVal))
+				memcpy(table.language, strVal.c_str(), strVal.size() + 1);
+
+			childNode = p->children;
+			while(childNode)
+			{
+				if(xmlStrcmp(childNode->name, (const xmlChar*)"String") == 0)
+				{
+					int stringID;
+					if(readXMLInteger(childNode, "ID", intVal))
+					{
+						stringID = intVal;
+						if(stringID <= LANGUAGE_STRINGS)
+						{
+							if(readXMLString(childNode, "Value", strVal))
+								memcpy(table.languageStrings[stringID], strVal.c_str(), strVal.size() + 1);
+						}
+					}
+				}
+				childNode = childNode->next;
+			}
+			languageList.push_back(table);
+		}
+		p = p->next;
+	}
+	return true;
+}
+
+/// <summary>
+/// Set language strings from file
+/// </summary>
+bool Tools::setLanguage(const char* languageName)
+{
+	std::list<languageTable_s>::iterator it;
+	if(!languageName)
+		return false;
+
+	for(it = languageList.begin(); it != languageList.end(); it++)
+	{
+		if(strcmp(languageName, (const char*)(*it).language) == 0)
+		{
+			for(int i = 0; i <= LANGUAGE_STRINGS; i++)
+			{
+				std::string str = (*it).languageStrings[i];
+				replaceString(str, "\\n", "\xa");
+				strcpy(languageTable[i], str.c_str());
+			}
+		}
+	}
+
+	return true;
 }

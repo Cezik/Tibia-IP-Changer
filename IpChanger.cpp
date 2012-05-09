@@ -331,9 +331,9 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_OTSERV_SUPPORT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[69]);
 			SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_TOOLTIPS, WM_SETTEXT, 0, (LPARAM)tools.languageTable[70]);
 			SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE_SAVE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[60]);
-			SendDlgItemMessage(gui.optionsWindow, ID_DLG_PROTOCOL_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[65]);
-			SendDlgItemMessage(gui.optionsWindow, ID_DLG_IPADDR_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[64]);
-			SendDlgItemMessage(gui.optionsWindow, ID_DLG_PORT_TXT, WM_SETTEXT, 0, (LPARAM)tools.languageTable[56]);
+			SendDlgItemMessage(gui.optionsWindow, ID_DLG_PROTOCOL_TRANSLATE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[65]);
+			SendDlgItemMessage(gui.optionsWindow, ID_DLG_IPADDR_TRANSLATE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[64]);
+			SendDlgItemMessage(gui.optionsWindow, ID_DLG_PORT_TRANSLATE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[56]);
 			break;
 		}
 
@@ -1012,11 +1012,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	iccex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	InitCommonControlsEx(&iccex);
 
-	if(!tools.loadLanguageStrings(LANGUAGE_FILE))
+	if(!tools.loadLanguageStringsFromXML())
 	{
-		gui.messageBox(MESSAGE_TYPE_FATAL_ERROR, NAME, "Could not load \"%s\" file!\nFile prodably doesn't exists!", LANGUAGE_FILE);
+		gui.messageBox(MESSAGE_TYPE_FATAL_ERROR, NAME, "Could not load \"Languages.xml\" file!\nFile prodably doesn't exists!");
 		return 0;
 	}
+	else
+	    tools.setLanguage(tools.m_defaultLanguage.c_str());
 
 	if(!tools.loadFromXmlAddresses())
 	{
