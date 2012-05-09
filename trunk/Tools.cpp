@@ -907,6 +907,35 @@ bool Tools::setLanguage(const char* languageName)
 			{
 				std::string str = (*it).languageStrings[i];
 				replaceString(str, "\\n", "\xa");
+				if(strcmp(languageName, "Polish") == 0)
+				{
+					replaceString(str, "#260;", "•");
+					replaceString(str, "#261;", "a");
+
+					replaceString(str, "#262;", "∆");
+					replaceString(str, "#263;", "Ê");
+
+					replaceString(str, "#280;", " ");
+					replaceString(str, "#281;", "Í");
+
+					replaceString(str, "#321;", "£");
+					replaceString(str, "#322;", "≥");
+
+					replaceString(str, "#323;", "—");
+					replaceString(str, "#324;", "Ò");
+
+					replaceString(str, "#211;", "”");
+					replaceString(str, "#243;", "Û");
+
+					replaceString(str, "#346;", "å");
+					replaceString(str, "#347;", "ú");
+
+					replaceString(str, "#377;", "è");
+					replaceString(str, "#378;", "ü");
+					
+					replaceString(str, "#379;", "Ø");
+					replaceString(str, "#380;", "ø");
+				}
 				strcpy(languageTable[i], str.c_str());
 			}
 		}
