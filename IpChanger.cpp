@@ -27,6 +27,8 @@
 WinGUI gui;
 Tools tools;
 
+bool showRealWindow = false;
+
 bool saveServerList()
 {
 	xmlNodePtr root, listNode;
@@ -94,6 +96,48 @@ bool parseCommandLine(std::vector<std::string> args)
 		++argi;
 	}
 	return true;
+}
+
+BOOL CALLBACK LanguageWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	gui.languageWindow = hWnd;
+	switch(message) 
+	{
+		case WM_INITDIALOG:
+		{
+			std::list<languageTable_s>::iterator it;
+			for(it = tools.languageList.begin(); it != tools.languageList.end(); it++)
+			{
+				SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_ADDSTRING, 0, (LPARAM)(*it).language);
+				SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_SELECTSTRING, 0, (LPARAM)(*it).language);
+			}
+			break;
+		}
+
+		case WM_COMMAND:
+			switch(LOWORD(wParam)) 
+			{
+				case ID_DLG_LANGUAGE_SAVE:
+					char languageName[25];
+					const int nIndex = SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_GETCURSEL, 0, 0);
+					SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_GETLBTEXT, nIndex, (LPARAM)languageName);
+					WritePrivateProfileString(SECTION, "Default Language", languageName, tools.getFilePath(CONFIG_FILE).c_str());
+					gui.messageBox(MESSAGE_TYPE_INFO, NAME, "You've saved successfully language for IP Changer!\nPlease restart now %s", NAME);
+					EndDialog(gui.languageWindow, 0);
+					break;
+
+				case ID_DLG_LANGUAGE_EXIT:
+					SendMessage(gui.languageWindow, WM_DESTROY, 0, 0);
+					break;
+			}
+			break;
+
+		case WM_CLOSE:
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
+	}
+	return false;
 }
 
 BOOL CALLBACK ServerInfoProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -1018,8 +1062,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 	else
-	    tools.setLanguage(tools.m_defaultLanguage.c_str());
-
+	{
+		if(tools.m_defaultLanguage.empty())
+			showRealWindow = false;
+		else
+		{
+			tools.setLanguage(tools.m_defaultLanguage.c_str());
+			showRealWindow = true;
+		}
+	}
+ 
 	if(!tools.loadFromXmlAddresses())
 	{
 		gui.messageBox(MESSAGE_TYPE_FATAL_ERROR, NAME, tools.languageTable[42], ADDRESSES_FILE);
@@ -1097,7 +1149,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		gui.hInst = hInstance;
 		gui.mainMenu = GetSubMenu(LoadMenu(gui.hInst, MAKEINTRESOURCE(ID_MAIN_MENU)), 0);
 		CreateDialog(gui.hInst, MAKEINTRESOURCE(ID_DLG_OPTIONS_WINDOW), NULL, OptionsWindow);
-		DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_MAIN_GUI), HWND_DESKTOP, MainWindowProc);
+		if(showRealWindow)
+			DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_MAIN_GUI), HWND_DESKTOP, MainWindowProc);
+		else
+		{
+			CreateDialog(gui.hInst, MAKEINTRESOURCE(ID_DLG_MAIN_GUI), NULL, MainWindowProc);
+			DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_LANGUAGE), HWND_DESKTOP, LanguageWindow);
+		}
 		return 0;
 	}
 	return 0;
