@@ -54,7 +54,7 @@ class WinGUI
 		HINSTANCE hInst;
 		NOTIFYICONDATA trayIcon;
 		HMENU ipListMenu, ipListMenu2, trayMenu, mainMenu;
-		HWND mainWindow, hWndIpList, optionsWindow;
+		HWND mainWindow, hWndIpList, optionsWindow, languageWindow;
 		LVITEM lvi;
 		HBITMAP hbIcons[ID_ICON_LAST];
 		HICON mainIcon;
