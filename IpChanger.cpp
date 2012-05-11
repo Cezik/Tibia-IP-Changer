@@ -105,12 +105,23 @@ BOOL CALLBACK LanguageWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 	{
 		case WM_INITDIALOG:
 		{
+			HFONT m_hFont;
+			LOGFONT lfont;
+			memset(&lfont, 0, sizeof(lfont));
+			lstrcpy(lfont.lfFaceName, TEXT("Arial"));
+			lfont.lfHeight = 16;
+			lfont.lfWeight = FW_BOLD;
+			lfont.lfItalic = false;
+			lfont.lfCharSet = DEFAULT_CHARSET;
+			lfont.lfOutPrecision = OUT_DEFAULT_PRECIS;
+			lfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+			lfont.lfQuality = DEFAULT_QUALITY;
+			lfont.lfPitchAndFamily = DEFAULT_PITCH;
+			m_hFont = CreateFontIndirect(&lfont);
+			SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_SAVE, WM_SETFONT, (WPARAM)m_hFont, 0);
 			std::list<languageTable_s>::iterator it;
 			for(it = tools.languageList.begin(); it != tools.languageList.end(); it++)
-			{
 				SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_ADDSTRING, 0, (LPARAM)(*it).language);
-				SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_SELECTSTRING, 0, (LPARAM)(*it).language);
-			}
 			break;
 		}
 
@@ -130,10 +141,25 @@ BOOL CALLBACK LanguageWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 					SendMessage(gui.languageWindow, WM_DESTROY, 0, 0);
 					break;
 			}
+			switch(HIWORD(wParam))
+			{
+				case CBN_SELCHANGE:
+					const int nIndex = SendMessage((HWND)lParam, (UINT)CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+					char languageName[25];
+					SendMessage((HWND)lParam, (UINT)CB_GETLBTEXT, nIndex, (LPARAM)languageName);
+					std::list<languageTable_s>::iterator it;
+					for(it = tools.languageList.begin(); it != tools.languageList.end(); it++)
+					{
+						if(strcmp(languageName, (char*)(*it).language) == 0)
+							SetDlgItemText(gui.languageWindow, ID_DLG_LANGUAGE_AUTHOR, (char*)(*it).author);
+					}
+					break;
+			}
 			break;
 
 		case WM_CLOSE:
 		case WM_DESTROY:
+			Shell_NotifyIcon(NIM_DELETE, &gui.trayIcon);
 			PostQuitMessage(0);
 			break;
 	}
@@ -897,14 +923,12 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 			if(tools.loadFromXmlIpList())
 			{
-				std::list<serversList_s>::reverse_iterator it;
-				for(it = tools.servList.rbegin(); it != tools.servList.rend(); it++)
+				std::list<serversList_s>::iterator it;
+				for(it = tools.servList.begin(); it != tools.servList.end(); it++)
 				{
 					if(!(*it).ipList.empty())
-					{
 						SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)(*it).ipList.c_str());
-						SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_SELECTSTRING, 0, (LPARAM)(*it).ipList.c_str());
-					}
+					SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 				}
 			}
 			else
@@ -967,15 +991,13 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 					SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_RESETCONTENT, 0 , 0);
 					if(tools.loadFromXmlIpList())
 					{
-						std::list<serversList_s>::reverse_iterator it;
-						for(it = tools.servList.rbegin(); it != tools.servList.rend(); it++)
+						std::list<serversList_s>::iterator it;
+						for(it = tools.servList.begin(); it != tools.servList.end(); it++)
 						{
 							if(!(*it).ipList.empty())
-							{
 								SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)(*it).ipList.c_str());
-							}
-							SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_SELECTSTRING, 0, (LPARAM)(*it).ipList.c_str());
 						}
+						SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
 					}
 					else
 						SetDlgItemText(gui.mainWindow, ID_DLG_IP, "127.0.0.1");

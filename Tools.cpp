@@ -791,6 +791,8 @@ bool Tools::loadLanguageStringsFromXML()
 		{
 			if(readXMLString(p, "Name", strVal))
 				memcpy(table.language, strVal.c_str(), strVal.size() + 1);
+			if(readXMLString(p, "Author", strVal))
+				memcpy(table.author, strVal.c_str(), strVal.size() + 1);
 
 			childNode = p->children;
 			while(childNode)
@@ -833,6 +835,7 @@ bool Tools::setLanguage(const char* languageName)
 		{
 			for(int i = 0; i <= LANGUAGE_STRINGS; i++)
 			{
+/* TODO (Czepek#1#): Add other HTML escape chars for other languages */
 				std::string str = (*it).languageStrings[i];
 				replaceString(str, "\\n", "\xa");
 
@@ -868,6 +871,13 @@ bool Tools::setLanguage(const char* languageName)
 
 				replaceString(str, "#379;", "¯");
 				replaceString(str, "#380;", "¿");
+
+				replaceString(str, "#196;", "Ä");
+				replaceString(str, "#228;", "ä");
+				replaceString(str, "#229;", "ä");
+
+				replaceString(str, "#214;", "Ö");
+				replaceString(str, "#246;", "ö");
 
 				strcpy(languageTable[i], str.c_str());
 			}
