@@ -61,6 +61,7 @@ struct languageTable_s
 {
 	char* language[25];
 	char languageStrings[LANGUAGE_STRINGS+1][512];
+	char* author[25];
 };
 
 struct serversList_s
