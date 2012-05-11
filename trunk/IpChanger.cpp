@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Czepek's IP Changer - Developed by Czepek                                  //
+// Czepek's IP Changer - Developed by Czepek								  //
 ////////////////////////////////////////////////////////////////////////////////
-// This program is free software; you can redistribute it and/or              //
-// modify it under the terms of the GNU General Public License                //
-// as published by the Free Software Foundation; either version 2             //
-// of the License, or (at your option) any later version.                     //
-//                                                                            //
-// This program is distributed in the hope that it will be useful,            //
-// but WITHOUT ANY WARRANTY; without even the implied warranty of             //
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              //
-// GNU General Public License for more details.                               //
-//                                                                            //
-// You should have received a copy of the GNU General Public License          //
-// along with this program; if not, write to the Free Software Foundation,    //
-// Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            //
+// This program is free software; you can redistribute it and/or			  //
+// modify it under the terms of the GNU General Public License				  //
+// as published by the Free Software Foundation; either version 2			  //
+// of the License, or (at your option) any later version.					  //
+//																			  //
+// This program is distributed in the hope that it will be useful,			  //
+// but WITHOUT ANY WARRANTY; without even the implied warranty of			  //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the			  //
+// GNU General Public License for more details.								  //
+//																			  //
+// You should have received a copy of the GNU General Public License		  //
+// along with this program; if not, write to the Free Software Foundation,	  //
+// Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.			  //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
@@ -678,13 +678,14 @@ BOOL CALLBACK serverList(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if(tools.loadFromXmlIpList())
 			{
-				for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
+				std::list<serversList_s>::iterator it;
+				for(it = tools.servList.begin(); it != tools.servList.end(); it++)
 				{
-					if(!tools.IpListAddr[i].empty() && !tools.IpListPort[i].empty())
+					if(!(*it).ipList.empty() && !(*it).portList.empty())
 					{
 						int nCount = ListView_GetItemCount(gui.hWndIpList);
-						gui.doCreateItem(gui.hWndIpList, (char*)tools.IpListAddr[i].c_str(), nCount, 0, nCount);
-						gui.doCreateItem(gui.hWndIpList, (char*)tools.IpListPort[i].c_str(), nCount, 1, nCount);
+						gui.doCreateItem(gui.hWndIpList, (char*)(*it).ipList.c_str(), nCount, 0, nCount);
+						gui.doCreateItem(gui.hWndIpList, (char*)(*it).portList.c_str(), nCount, 1, nCount);
 						gui.doCreateItem(gui.hWndIpList, "?", nCount, 2, nCount);
 					}
 				}
@@ -853,7 +854,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			if(wParam == SIZE_MINIMIZED)
 			{
 				gui.minimized = true;
-				ShowWindow(hWnd, SW_HIDE);
+				ShowWindow(gui.mainWindow, SW_HIDE);
 				ModifyMenu(gui.trayMenu, ID_MENU_TRAY_HIDE, MF_STRING, ID_MENU_TRAY_HIDE, tools.languageTable[12]);
 			}
 			break;
@@ -879,7 +880,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			SendDlgItemMessage(hWnd, ID_DLG_LINK, WM_SETFONT, (WPARAM)m_hFont, 0);
 
 			gui.trayIcon.cbSize = sizeof(NOTIFYICONDATA);
-			gui.trayIcon.hWnd = hWnd;
+			gui.trayIcon.hWnd = gui.mainWindow;
 			gui.trayIcon.uID = ID_TRAY_ICON;
 			gui.trayIcon.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 			gui.trayIcon.uCallbackMessage = WM_SHELLNOTIFY;
@@ -896,14 +897,15 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 			if(tools.loadFromXmlIpList())
 			{
-				for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
+				std::list<serversList_s>::reverse_iterator it;
+				for(it = tools.servList.rbegin(); it != tools.servList.rend(); it++)
 				{
-					if(!tools.IpListAddr[i].empty())
+					if(!(*it).ipList.empty())
 					{
-						SendDlgItemMessage(hWnd, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)tools.IpListAddr[i].c_str());
+						SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)(*it).ipList.c_str());
+						SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_SELECTSTRING, 0, (LPARAM)(*it).ipList.c_str());
 					}
 				}
-				SendDlgItemMessage(hWnd, ID_DLG_IP, CB_SELECTSTRING, 0, (LPARAM)tools.IpListAddr[0].c_str());
 			}
 			else
 				SetDlgItemText(hWnd, ID_DLG_IP, "127.0.0.1");
@@ -911,16 +913,16 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 			if(tools.getShowToolTips())
 			{
-				gui.createToolTip(GetDlgItem(hWnd, ID_DLG_CHANGE_IP), tools.languageTable[44], (HICON)gui.mainIcon, NAME);
-				gui.createToolTip(GetDlgItem(hWnd, ID_DLG_SHOW_SERVER_INFO), tools.languageTable[45], (HICON)gui.mainIcon, NAME);
-				gui.createToolTip(GetDlgItem(hWnd, ID_DLG_CHANGE_TITLE), tools.languageTable[46], (HICON)gui.mainIcon, NAME);
-				gui.createToolTip(GetDlgItem(hWnd, ID_DLG_IP), tools.languageTable[47], (HICON)gui.mainIcon, NAME);
-				gui.createToolTip(GetDlgItem(hWnd, ID_DLG_PORT), tools.languageTable[54], (HICON)gui.mainIcon, NAME);
-				gui.createToolTip(GetDlgItem(hWnd, ID_DLG_LINK), tools.languageTable[48], (HICON)gui.mainIcon, NAME);
-				gui.createToolTip(GetDlgItem(hWnd, ID_DLG_REFRESH_LIST), tools.languageTable[55], (HICON)gui.mainIcon, NAME);
+				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_CHANGE_IP), tools.languageTable[44], (HICON)gui.mainIcon, NAME);
+				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_SHOW_SERVER_INFO), tools.languageTable[45], (HICON)gui.mainIcon, NAME);
+				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_CHANGE_TITLE), tools.languageTable[46], (HICON)gui.mainIcon, NAME);
+				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_IP), tools.languageTable[47], (HICON)gui.mainIcon, NAME);
+				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_PORT), tools.languageTable[54], (HICON)gui.mainIcon, NAME);
+				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_LINK), tools.languageTable[48], (HICON)gui.mainIcon, NAME);
+				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_REFRESH_LIST), tools.languageTable[55], (HICON)gui.mainIcon, NAME);
 			}
 
-			gui.mainMenu = GetMenu(hWnd);
+			gui.mainMenu = GetMenu(gui.mainWindow);
 			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_EXIT, MF_BYCOMMAND, gui.hbIcons[ID_ICON_CLOSE], gui.hbIcons[ID_ICON_CLOSE]);
 			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_OPTIONS, MF_BYCOMMAND, gui.hbIcons[ID_ICON_OPTIONS], gui.hbIcons[ID_ICON_OPTIONS]);
 			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_IP_LIST, MF_BYCOMMAND, gui.hbIcons[ID_ICON_IPLIST], gui.hbIcons[ID_ICON_IPLIST]);
@@ -928,15 +930,17 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			SetMenuItemBitmaps(gui.trayMenu, ID_MENU_IP_LIST, MF_BYCOMMAND, gui.hbIcons[ID_ICON_IPLIST], gui.hbIcons[ID_ICON_IPLIST]);
 			SetMenuItemBitmaps(gui.trayMenu, ID_MENU_TRAY_HIDE, MF_BYCOMMAND, gui.hbIcons[ID_ICON_TRAY], gui.hbIcons[ID_ICON_TRAY]);
 			SetMenuItemBitmaps(gui.trayMenu, ID_MENU_EXIT, MF_BYCOMMAND, gui.hbIcons[ID_ICON_CLOSE], gui.hbIcons[ID_ICON_CLOSE]);
+			SetMenuItemBitmaps(gui.mainMenu, ID_MENU_CHANGE_LANGUAGE, MF_BYCOMMAND, gui.hbIcons[ID_ICON_LANGUAGE], gui.hbIcons[ID_ICON_LANGUAGE]);
 
 			ModifyMenu(gui.mainMenu, ID_MENU_IP_LIST, MF_STRING, ID_MENU_IP_LIST, tools.languageTable[15]);
 			ModifyMenu(gui.mainMenu, ID_MENU_OPTIONS, MF_STRING, ID_MENU_OPTIONS, tools.languageTable[36]);
 			ModifyMenu(gui.mainMenu, ID_MENU_EXIT, MF_STRING, ID_MENU_EXIT, tools.languageTable[14]);
 			ModifyMenu(gui.mainMenu, ID_MENU_UPDATE, MF_STRING, ID_MENU_UPDATE, tools.languageTable[71]);
+			ModifyMenu(gui.mainMenu, ID_MENU_CHANGE_LANGUAGE, MF_STRING, ID_MENU_CHANGE_LANGUAGE, tools.languageTable[74]);
 
-			SendDlgItemMessage(hWnd, ID_DLG_CHANGE_TITLE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[57]);
-			SendDlgItemMessage(hWnd, ID_DLG_CHANGE_IP, WM_SETTEXT, 0, (LPARAM)tools.languageTable[58]);
-			SendDlgItemMessage(hWnd, ID_DLG_SHOW_SERVER_INFO, WM_SETTEXT, 0, (LPARAM)tools.languageTable[17]);
+			SendDlgItemMessage(gui.mainWindow, ID_DLG_CHANGE_TITLE, WM_SETTEXT, 0, (LPARAM)tools.languageTable[57]);
+			SendDlgItemMessage(gui.mainWindow, ID_DLG_CHANGE_IP, WM_SETTEXT, 0, (LPARAM)tools.languageTable[58]);
+			SendDlgItemMessage(gui.mainWindow, ID_DLG_SHOW_SERVER_INFO, WM_SETTEXT, 0, (LPARAM)tools.languageTable[17]);
 			break;
 		}
 
@@ -944,7 +948,11 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 			switch(LOWORD(wParam)) 
 			{
 				case ID_MENU_EXIT:
-					SendMessage(hWnd, WM_DESTROY, 0, 0);
+					SendMessage(gui.mainWindow, WM_DESTROY, 0, 0);
+					break;
+
+				case ID_MENU_CHANGE_LANGUAGE:
+					DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_LANGUAGE), HWND_DESKTOP, LanguageWindow);
 					break;
 
 				case ID_MENU_UPDATE:
@@ -956,32 +964,33 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 				case ID_DLG_REFRESH_LIST:
 				{
-					SendDlgItemMessage(hWnd, ID_DLG_IP, CB_RESETCONTENT, 0 , 0);
+					SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_RESETCONTENT, 0 , 0);
 					if(tools.loadFromXmlIpList())
 					{
-						for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
+						std::list<serversList_s>::reverse_iterator it;
+						for(it = tools.servList.rbegin(); it != tools.servList.rend(); it++)
 						{
-							if(!tools.IpListAddr[i].empty())
+							if(!(*it).ipList.empty())
 							{
-								SendDlgItemMessage(hWnd, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)tools.IpListAddr[i].c_str());
+								SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_ADDSTRING, 0 , (LPARAM)(*it).ipList.c_str());
 							}
+							SendDlgItemMessage(gui.mainWindow, ID_DLG_IP, CB_SELECTSTRING, 0, (LPARAM)(*it).ipList.c_str());
 						}
-						SendDlgItemMessage(hWnd, ID_DLG_IP, CB_SELECTSTRING, 0, (LPARAM)tools.IpListAddr[0].c_str());
 					}
 					else
-						SetDlgItemText(hWnd, ID_DLG_IP, "127.0.0.1");
+						SetDlgItemText(gui.mainWindow, ID_DLG_IP, "127.0.0.1");
 					break;
 				}
 
 				case ID_DLG_CHANGE_IP:
 				{
 					char ipAddress[255], port[10];
-					if(GetDlgItemText(hWnd, ID_DLG_IP, ipAddress, sizeof(ipAddress)))
+					if(GetDlgItemText(gui.mainWindow, ID_DLG_IP, ipAddress, sizeof(ipAddress)))
 					{
-						GetDlgItemText(hWnd, ID_DLG_PORT, port, sizeof(port));
+						GetDlgItemText(gui.mainWindow, ID_DLG_PORT, port, sizeof(port));
 						if(HIWORD(wParam) == BN_CLICKED)
 						{
-							if(SendDlgItemMessage(hWnd, ID_DLG_CHANGE_TITLE, BM_GETCHECK, 0, 0))
+							if(SendDlgItemMessage(gui.mainWindow, ID_DLG_CHANGE_TITLE, BM_GETCHECK, 0, 0))
 							{
 								if(tools.setNewConnection(ipAddress, (uint16_t)atoi(port), true))
 								{
@@ -1019,14 +1028,14 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 				{
 					if(gui.minimized)
 					{
-						ShowWindow(hWnd, SW_SHOW);
-						ShowWindow(hWnd, SW_RESTORE);
+						ShowWindow(gui.mainWindow, SW_SHOW);
+						ShowWindow(gui.mainWindow, SW_RESTORE);
 						ModifyMenu(gui.trayMenu, ID_MENU_TRAY_HIDE, MF_STRING, ID_MENU_TRAY_HIDE, tools.languageTable[13]);
 						gui.minimized = false;
 					}
 					else
 					{
-						ShowWindow(hWnd, SW_HIDE);
+						ShowWindow(gui.mainWindow, SW_HIDE);
 						ModifyMenu(gui.trayMenu, ID_MENU_TRAY_HIDE, MF_STRING, ID_MENU_TRAY_HIDE, tools.languageTable[12]);
 						gui.minimized = true;
 					}
@@ -1150,7 +1159,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		gui.mainMenu = GetSubMenu(LoadMenu(gui.hInst, MAKEINTRESOURCE(ID_MAIN_MENU)), 0);
 		CreateDialog(gui.hInst, MAKEINTRESOURCE(ID_DLG_OPTIONS_WINDOW), NULL, OptionsWindow);
 		if(showRealWindow)
+		{
 			DialogBoxA(gui.hInst, MAKEINTRESOURCE(ID_DLG_MAIN_GUI), HWND_DESKTOP, MainWindowProc);
+			CreateDialog(gui.hInst, MAKEINTRESOURCE(ID_DLG_LANGUAGE), NULL, LanguageWindow);
+		}
 		else
 		{
 			CreateDialog(gui.hInst, MAKEINTRESOURCE(ID_DLG_MAIN_GUI), NULL, MainWindowProc);
