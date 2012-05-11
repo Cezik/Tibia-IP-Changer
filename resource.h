@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Czepek's IP Changer - Developed by Czepek                                  //
+// Czepek's IP Changer - Developed by Czepek								  //
 ////////////////////////////////////////////////////////////////////////////////
-// This program is free software; you can redistribute it and/or              //
-// modify it under the terms of the GNU General Public License                //
-// as published by the Free Software Foundation; either version 2             //
-// of the License, or (at your option) any later version.                     //
-//                                                                            //
-// This program is distributed in the hope that it will be useful,            //
-// but WITHOUT ANY WARRANTY; without even the implied warranty of             //
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              //
-// GNU General Public License for more details.                               //
-//                                                                            //
-// You should have received a copy of the GNU General Public License          //
-// along with this program; if not, write to the Free Software Foundation,    //
-// Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            //
+// This program is free software; you can redistribute it and/or			  //
+// modify it under the terms of the GNU General Public License				  //
+// as published by the Free Software Foundation; either version 2			  //
+// of the License, or (at your option) any later version.					  //
+//																			  //
+// This program is distributed in the hope that it will be useful,			  //
+// but WITHOUT ANY WARRANTY; without even the implied warranty of			  //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the			  //
+// GNU General Public License for more details.								  //
+//																			  //
+// You should have received a copy of the GNU General Public License		  //
+// along with this program; if not, write to the Free Software Foundation,	  //
+// Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.			  //
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _MSC_VER
@@ -37,8 +37,9 @@
 #define ID_ICON_INFORMATION 18
 #define ID_ICON_CHANGEIP 19
 #define ID_ICON_UPDATE 20
+#define ID_ICON_LANGUAGE 21
 
-#define ID_ICON_LAST ID_ICON_UPDATE+1
+#define ID_ICON_LAST ID_ICON_LANGUAGE+1
 
 #define ID_DLG_LISTVIEW 99
 #define ID_ICON 100
@@ -60,6 +61,7 @@
 #define ID_MENU_DELETE_ALL_SERVERS 2010
 #define ID_MENU_TRAY_HIDE 2011
 #define ID_MENU_UPDATE 2012
+#define ID_MENU_CHANGE_LANGUAGE 2013
 
 #define ID_DLG_MAIN_GUI 101
 #define ID_DLG_IP 102

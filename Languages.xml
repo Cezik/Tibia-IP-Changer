@@ -74,6 +74,7 @@
 		<String ID="71" Value="Aktualizacja"/>
 		<String ID="72" Value="Adresy zosta#322;y zaktualizowane!\nProsz#281; uruchomi#263; program ponownie."/>
 		<String ID="73" Value="Nie mo#380;na zapisa#263; zaktualizowanych adres#243;w!"/>
+		<String ID="74" Value="Zmie#324; j#281;zyk"/>
 	</Language>
 	<Language Name="English">
 		<String ID="1" Value="Tibia Window not found!"/>
@@ -149,5 +150,6 @@
 		<String ID="71" Value="Update"/>
 		<String ID="72" Value="Addresses has been updated!\nPlease restart program."/>
 		<String ID="73" Value="Couldn't save updated addresses!"/>
+		<String ID="74" Value="Change language"/>
 	</Language>
 </Languages>

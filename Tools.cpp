@@ -1,19 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Czepek's IP Changer - Developed by Czepek                                  //
+// Czepek's IP Changer - Developed by Czepek								  //
 ////////////////////////////////////////////////////////////////////////////////
-// This program is free software; you can redistribute it and/or              //
-// modify it under the terms of the GNU General Public License                //
-// as published by the Free Software Foundation; either version 2             //
-// of the License, or (at your option) any later version.                     //
-//                                                                            //
-// This program is distributed in the hope that it will be useful,            //
-// but WITHOUT ANY WARRANTY; without even the implied warranty of             //
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              //
-// GNU General Public License for more details.                               //
-//                                                                            //
-// You should have received a copy of the GNU General Public License          //
-// along with this program; if not, write to the Free Software Foundation,    //
-// Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.            //
+// This program is free software; you can redistribute it and/or			  //
+// modify it under the terms of the GNU General Public License				  //
+// as published by the Free Software Foundation; either version 2			  //
+// of the License, or (at your option) any later version.					  //
+//																			  //
+// This program is distributed in the hope that it will be useful,			  //
+// but WITHOUT ANY WARRANTY; without even the implied warranty of			  //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the			  //
+// GNU General Public License for more details.								  //
+//																			  //
+// You should have received a copy of the GNU General Public License		  //
+// along with this program; if not, write to the Free Software Foundation,	  //
+// Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.			  //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "Tools.h"
@@ -483,24 +483,25 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 		strcpy(clientVersion, cVer.c_str());
 		int cVersion = atoi(clientVersion);
 
-		for(int i = 0; i <= MAX_AMOUNT_OF_PROTOCOLS; i++)
+		std::list<addressReading>::iterator it;
+		for(it = addrReading.begin(); it != addrReading.end(); it++)
 		{
-			if(cVersion == atoi(rAddr[i].protocol))
+			if(cVersion == atoi((*it).protocol))
 			{
-				if(rAddr[i].isUsed)
+				if((*it).isUsed)
 				{
 					DWORD rsaAddr = 0x00, ipAddr = 0x00;
-					if(atoi(rAddr[i].protocol) >= 910)
+					if(atoi((*it).protocol) >= 910)
 					{
-						rsaAddr = AlignAddress(pID, rAddr[i].rsaAddr);
-						ipAddr = AlignAddress(pID, rAddr[i].ipAddr);
+						rsaAddr = AlignAddress(pID, (*it).rsaAddr);
+						ipAddr = AlignAddress(pID, (*it).ipAddr);
 					}
 					else
 					{
-						rsaAddr = rAddr[i].rsaAddr;
-						ipAddr = rAddr[i].ipAddr;
+						rsaAddr = (*it).rsaAddr;
+						ipAddr = (*it).ipAddr;
 					}
-					const uint16_t loginServers = rAddr[i].loginServers;
+					const uint16_t loginServers = (*it).loginServers;
 					if(rsaAddr != 0x00)
 					{
 						if(getUseOtherRSA())
@@ -597,11 +598,7 @@ bool Tools::readXMLInteger(xmlNodePtr node, const char* tag, int& value)
 /// </summary>
 bool Tools::loadFromXmlIpList()
 {
-	for(int i = 0; i < MAX_SERVERS_IN_LIST; i++)
-	{
-		IpListAddr[i].clear();
-		IpListPort[i].clear();
-	}
+	servList.clear();
 
 	xmlDocPtr doc = xmlParseFile(getFilePath(SERVER_LIST_FILE).c_str());
 	if(!doc)
@@ -619,14 +616,16 @@ bool Tools::loadFromXmlIpList()
 	while(p)
 	{
 		std::string strVal;
+		serversList_s list;
 		if(xmlStrcmp(p->name, (const xmlChar*)"Server") == 0)
 		{
 			if(readXMLString(p, "IP", strVal))
-				IpListAddr[cID] = strVal;
+				list.ipList = strVal;
 			if(readXMLString(p, "Port", strVal))
-				IpListPort[cID] = strVal;
+				list.portList = strVal;
 			cID++;
 		}
+		servList.push_back(list);
 		p = p->next;
 	}
 	xmlFreeDoc(doc);
@@ -677,36 +676,40 @@ bool Tools::loadFromXmlAddresses()
 		return false;
 	}
 
+	addrReading.clear();
+
 	p = root->children;
 	int cID = 0;
 	while(p)
 	{
 		std::string strVal;
 		int intVal;
+		addressReading rAddr;
 		if(xmlStrcmp(p->name, (const xmlChar*)"Protocol") == 0)
 		{
 			if(readXMLString(p, "Version", strVal))
 			{
-				rAddr[cID].protocol = new char[strVal.size()+1];
-				strcpy(rAddr[cID].protocol, strVal.c_str());
-				rAddr[cID].isUsed = true;
+				rAddr.protocol = new char[strVal.size() + 1];
+				strcpy(rAddr.protocol, strVal.c_str());
+				rAddr.isUsed = true;
 			}
 			else
-				rAddr[cID].isUsed = false;
+				rAddr.isUsed = false;
 			if(readXMLString(p, "rsaAddr", strVal))
 			{
-				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].rsaAddr);
+				sscanf(strVal.c_str(), "0x%X", &rAddr.rsaAddr);
 			}
 			if(readXMLString(p, "ipAddr", strVal))
 			{
-				sscanf(strVal.c_str(), "0x%X", &rAddr[cID].ipAddr);
+				sscanf(strVal.c_str(), "0x%X", &rAddr.ipAddr);
 			}
 			if(readXMLInteger(p, "loginServers", intVal))
 			{
-				rAddr[cID].loginServers = (uint16_t)intVal;
+				rAddr.loginServers = (uint16_t)intVal;
 			}
 			cID++;
 		}
+		addrReading.push_back(rAddr);
 		p = p->next;
 	}
 	xmlFreeDoc(doc);
@@ -718,24 +721,7 @@ bool Tools::loadFromXmlAddresses()
 /// </summary>
 bool Tools::updateXmlAddresses()
 {
-	boost::asio::io_service io_service;
-	boost::asio::ip::address addr = boost::asio::ip::address::from_string("216.34.181.65");
-	boost::asio::ip::tcp::endpoint endpoint(addr, 80);
-	tcp::socket socket(io_service);
-	socket.connect(endpoint);
-	boost::asio::streambuf request;
-	std::ostream requestStream(&request);
-	requestStream << "GET /viewvc/czepekipchanger/trunk/Addresses.xml?revision=64&content-type=text/plain HTTP/1.1\r\n"
-					<< "Connection: Keep-Alive\r\n"
-					<< "Host: czepekipchanger.svn.sourceforge.net\r\n\r\n";
-
-	boost::asio::write(socket, request);
-	boost::asio::streambuf respond;
-	boost::system::error_code ec;
-	boost::asio::read(socket, respond, completion, ec);
-
-	std::cout << &respond << std::endl;
-	/* TODO (Czepek#5#): Parse "respond" and store addresses to make finally works updater */
+	/* TODO (Czepek#1#): Write 100% working function to update addresses */
 	return false;
 }
 
@@ -828,6 +814,7 @@ bool Tools::loadLanguageStringsFromXML()
 		}
 		p = p->next;
 	}
+	xmlFreeDoc(doc);
 	return true;
 }
 
