@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <Languages>
 	<Language Name="Polish" Author="Czepek">
 		<String ID="1" Value="Nie znaleziono #380;adnego klienta Tibii!\nUpewnij si#281;, czy aby na pewno w#322;#261;czy#322;e#347; Tibi#281;."/>
@@ -154,16 +154,16 @@
 	</Language>
 	<Language Name="Swedish" Author="Blaster_89">
 		<String ID="1" Value="Tibias f#246;nster kunde inte hittas!"/>
-		<String ID="2" Value="Detta Tibia-protokoll st#246;ds inte!\nVar god kontakta upphovsm#196;nnen av detta program ang#229;ende detta."/>
-		<String ID="3" Value="#196;r du s#196;ker p#229; att vill radera denna server?"/>
+		<String ID="2" Value="Detta Tibia-protokoll st#246;ds inte!\nVar god kontakta upphovsm#228;nnen av detta program ang#229;ende detta."/>
+		<String ID="3" Value="#196;r du s#228;ker p#229; att vill radera denna server?"/>
 		<String ID="4" Value="Icke funnen"/>
-		<String ID="5" Value="Server #196;r offline!"/>
-		<String ID="6" Value="Kunde inte h#196;mta information om server!"/>
-		<String ID="7" Value="F#246;rs#246;ker h#196;mta information om %s:%s"/>
+		<String ID="5" Value="Server #228;r offline!"/>
+		<String ID="6" Value="Kunde inte h#228;mta information om server!"/>
+		<String ID="7" Value="F#246;rs#246;ker h#228;mta information om %s:%s"/>
 		<String ID="8" Value="Skapade socket-anslutning!"/>
 		<String ID="9" Value="Kunde inte skapa anslutning!"/>
 		<String ID="10" Value="IP-adress"/>
-		<String ID="11" Value="#196;r du s#196;ker p#229; att du vill radera alla servrar?"/>
+		<String ID="11" Value="#196;r du s#228;ker p#229; att du vill radera alla servrar?"/>
 		<String ID="12" Value="Visa f#246;nster"/>
 		<String ID="13" Value="D#246;lj f#246;nster"/>
 		<String ID="14" Value="Avsluta"/>
@@ -173,8 +173,8 @@
 		<String ID="18" Value="Redigera server"/>
 		<String ID="19" Value="Radera server"/>
 		<String ID="20" Value="Radera alla servrar"/>
-		<String ID="21" Value="L#196;gg till server"/>
-		<String ID="22" Value="St#196;ng f#246;nster"/>
+		<String ID="21" Value="L#228;gg till server"/>
+		<String ID="22" Value="St#228;ng f#246;nster"/>
 		<String ID="23" Value="Dagens meddelande:"/>
 		<String ID="24" Value="Storlek:"/>
 		<String ID="25" Value="Kartans namn:"/>
@@ -189,21 +189,21 @@
 		<String ID="34" Value="Plats:"/>
 		<String ID="35" Value="Protokoll:"/>
 		<String ID="36" Value="Alternativ"/>
-		<String ID="37" Value="IP has #196;ndrats!\nAnv#196;nda argument(IP:Port): %s:%s"/>
+		<String ID="37" Value="IP has #228;ndrats!\nAnv#228;nda argument(IP:Port): %s:%s"/>
 		<String ID="38" Value="Fel parameter i argument(en)!\nExempel: IPChanger {-i eller -ip} och {-p eller -port}"/>
 		<String ID="39" Value="Ingen parameter f#246;r: '%s'"/>
-		<String ID="40" Value="IP har #196;ndrats!\nParametrar(IP:Port): %s:%s\nServern anv#196;nder protokoll: %s"/>
+		<String ID="40" Value="IP har #228;ndrats!\nParametrar(IP:Port): %s:%s\nServern anv#228;nder protokoll: %s"/>
 		<String ID="41" Value="Kunde inte ladda RSA-nyckel!"/>
 		<String ID="42" Value="Kunde inte ladda adresser fr#229;n filen %s!"/>
-		<String ID="43" Value="Kunde inte h#196;mta information! F#246;rmodligen finns det ingen inskriven IP-adress!"/>
+		<String ID="43" Value="Kunde inte h#228;mta information! F#246;rmodligen finns det ingen inskriven IP-adress!"/>
 		<String ID="44" Value="Knapp som byter IP-adress!"/>
-		<String ID="45" Value="Knapp som h#196;mtar information om server"/>
-		<String ID="46" Value="Om ikryssad kommer Tibias titel att #196;ndras"/>
+		<String ID="45" Value="Knapp som h#228;mtar information om server"/>
+		<String ID="46" Value="Om ikryssad kommer Tibias titel att #228;ndras"/>
 		<String ID="47" Value="IP-adress"/>
-		<String ID="48" Value="Klicka h#196;r om du vill bes#246;ka den officiella webbsidan av Czepeks IP Changer"/>
-		<String ID="49" Value="Standardv#196;rde f#246;r RSA-nyckel"/>
-		<String ID="50" Value="Visa popup-f#246;nster n#196;r byte av IP sker"/>
-		<String ID="51" Value="L#196;gg till IP till senaste servrarna medans byte av adress genomf#246;rs via argument"/>
+		<String ID="48" Value="Klicka h#228;r om du vill bes#246;ka den officiella webbsidan av Czepeks IP Changer"/>
+		<String ID="49" Value="Standardv#228;rde f#246;r RSA-nyckel"/>
+		<String ID="50" Value="Visa popup-f#246;nster n#228;r byte av IP sker"/>
+		<String ID="51" Value="L#228;gg till IP till senaste servrarna medans byte av adress genomf#246;rs via argument"/>
 		<String ID="52" Value="Support f#246;r OTServList.org (otserv://IP address/port/protocol)"/>
 		<String ID="53" Value="Om ikryssad kommer en popup-ruta att visas (du kommer att beh#246;va starta om programmet)"/>
 		<String ID="54" Value="Port"/>
@@ -214,19 +214,18 @@
 		<String ID="59" Value="OpenTibia"/>
 		<String ID="60" Value="Spara"/>
 		<String ID="61" Value="Ladda"/>
-		<String ID="62" Value="Anv#196;nd annan RSA"/>
-		<String ID="63" Value="Anv#196;nd denna"/>
+		<String ID="62" Value="Anv#228;nd annan RSA"/>
+		<String ID="63" Value="Anv#228;nd denna"/>
 		<String ID="64" Value="= IP"/>
 		<String ID="65" Value="= Klient-protokoll"/>
 		<String ID="66" Value="Visa popup-dialog efter byte av IP"/>
 		<String ID="67" Value="Byt Tibias titel"/>
-		<String ID="68" Value="L#196;gg till server till senaste adresser"/>
+		<String ID="68" Value="L#228;gg till server till senaste adresser"/>
 		<String ID="69" Value="Support f#246;r OTServlist.org"/>
 		<String ID="70" Value="Visa informations-f#246;nster"/>
-		<String ID="71" Value="Uppdatera"/> <!-- if 'Update' is a subjective (not a verb), it should be 'Uppdatering' -->
+		<String ID="71" Value="Uppdatera"/>
 		<String ID="72" Value="Adresser har uppdaterats!\nVar god starta om programmet."/>
 		<String ID="73" Value="Kunde inte spara uppdaterade adresser!"/>
 		<String ID="74" Value="Byt spr#229;k"/>
 	</Language>
-	
 </Languages>
