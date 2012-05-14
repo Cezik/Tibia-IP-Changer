@@ -12,7 +12,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=-D_WIN32_IE=0x0501_@@_-D_WIN32_WINNT=0x0501_@@_
-Linker=-lcomctl32_@@_-lversion_@@_-lpsapi_@@_-lws2_32_@@_-lshlwapi_@@_-lxml2_@@_-Wall_@@_-lboost_system_@@_-s_@@_
+Linker=-lcomctl32_@@_-lversion_@@_-lpsapi_@@_-lws2_32_@@_-lshlwapi_@@_-lxml2_@@_-Wall_@@_-s_@@_
 IsCpp=1
 Icon=
 ExeOutput=
