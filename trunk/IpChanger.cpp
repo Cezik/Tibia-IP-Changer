@@ -75,7 +75,7 @@ bool parseCommandLine(std::vector<std::string> args)
 				gui.messageBox(MESSAGE_TYPE_ERROR, NULL, tools.languageTable[39], arg.c_str());
 				return false;
 			}
-			tools.cmdLineIP = new char[strlen((*argi).c_str())];
+			tools.cmdLineIP = new char[(*argi).size()];
 			strcpy(tools.cmdLineIP, (*argi).c_str());
 		}
 		else if(arg == "-p" || arg == "-port")
@@ -85,7 +85,7 @@ bool parseCommandLine(std::vector<std::string> args)
 				gui.messageBox(MESSAGE_TYPE_ERROR, NULL, tools.languageTable[39], arg.c_str());
 				return false;
 			}
-			tools.cmdLinePort = new char[strlen((*argi).c_str())];
+			tools.cmdLinePort = new char[(*argi).size()];
 			strcpy(tools.cmdLinePort, (*argi).c_str());
 		}
 		else
@@ -159,8 +159,13 @@ BOOL CALLBACK LanguageWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
 		case WM_CLOSE:
 		case WM_DESTROY:
-			Shell_NotifyIcon(NIM_DELETE, &gui.trayIcon);
-			PostQuitMessage(0);
+			if(!showRealWindow)
+			{
+				Shell_NotifyIcon(NIM_DELETE, &gui.trayIcon);
+				PostQuitMessage(0);
+			}
+			else
+				EndDialog(gui.languageWindow, 0);
 			break;
 	}
 	return false;

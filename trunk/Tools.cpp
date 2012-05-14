@@ -18,15 +18,6 @@
 
 #include "Tools.h"
 #include "WinGUI.h"
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
-
-using boost::asio::ip::tcp;
-
-std::size_t completion(const boost::system::error_code& error, std::size_t bytes_transfered)
-{
-	return ! error;
-}
 
 extern WinGUI gui;
 
