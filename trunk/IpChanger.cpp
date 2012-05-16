@@ -133,8 +133,9 @@ BOOL CALLBACK LanguageWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 					const int nIndex = SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_GETCURSEL, 0, 0);
 					SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_GETLBTEXT, nIndex, (LPARAM)languageName);
 					WritePrivateProfileString(SECTION, "Default Language", languageName, tools.getFilePath(CONFIG_FILE).c_str());
-					gui.messageBox(MESSAGE_TYPE_INFO, NAME, "You've saved successfully language for IP Changer!\nPlease restart now %s", NAME);
-					EndDialog(gui.languageWindow, 0);
+					gui.messageBox(MESSAGE_TYPE_INFO, NAME, "You've saved successfully language!\nPlease restart now %s", NAME);
+					showRealWindow = false;
+					SendMessage(gui.languageWindow, WM_DESTROY, 0, 0);
 					break;
 
 				case ID_DLG_LANGUAGE_EXIT:
