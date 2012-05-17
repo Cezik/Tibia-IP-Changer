@@ -42,7 +42,7 @@
 	#define xmlFree(s) xmlFree(s)
 #endif
 
-#define CONFIG_FILE "IPChanger.ini"
+#define CONFIG_FILE "IPChanger.xml"
 #define SERVER_LIST_FILE "IPList.xml"
 #define ADDRESSES_FILE "Addresses.xml"
 #define LANGUAGE_FILE "Languages.xml"
@@ -76,26 +76,12 @@ class Tools
 		Tools();
 		~Tools();
 
-		bool getUseOtherRSA() const {return useOtherRSA;}
 		bool getCheckFromList() const {return checkFromList;}
-		bool getShowMessageBox() const {return showMessageBox;}
-		bool getChangeTitleCmdLine() const {return changeTitleCmdLine;}
-		bool getSupportForOTServList() const {return supportForOTServList;}
-		bool getShowToolTips() const {return showToolTips;}
 
-		void setUseOtherRSA(bool value){useOtherRSA = value;}
 		void setCheckFromList(bool value){checkFromList = value;}
-		void setShowMessageBox(bool value){showMessageBox = value;}
-		void setChangeTitleCmdLine(bool value){changeTitleCmdLine = value;}
-		void setSupportForOTServList(bool value){supportForOTServList = value;}
-		void setShowToolTips(bool value){showToolTips = value;}
 
 		bool fileExists(const char* fileName);
 		std::string getFilePath(const char* fileName);
-
-		int32_t readInteger(const char* key);
-		std::string readString(const char* key);
-		bool readBoolean(const char* key);
 
 		void replaceString(std::string& str, const std::string sought, const std::string replacement);
 		bool isCharInteger(const char* character);
@@ -122,6 +108,7 @@ class Tools
 		bool utf8ToLatin1(char* intext, std::string& outtext);
 		bool readXMLString(xmlNodePtr node, const char* tag, std::string& value);
 		bool readXMLInteger(xmlNodePtr node, const char* tag, int& value);
+		bool readXMLContentString(xmlNodePtr node, std::string& value);
 
 		bool loadFromXmlIpList();
 		bool setLanguage(const char* languageName);
@@ -154,8 +141,35 @@ class Tools
 		std::list<languageTable_s> languageList;
 		std::string m_defaultLanguage;
 
+		bool loadSettingsFromXML();
+
+		std::string getCustomRsaKey() const{return m_customRsaKey;}
+		void setCustomRsaKey(std::string value){m_customRsaKey = value;}
+
+		std::string getCustomTitle() const{return m_customTitle;}
+		void setCustomTitle(std::string value){m_customTitle = value;}
+
+		void setShowMessageBoxSetting(bool value) {m_showMessageBox = value;}
+		void setChangeTitleSetting(bool value) {m_changeTitle = value;}
+		void setShowToolTipsSetting(bool value) {m_showToolTips = value;}
+		void setURLProtocolSetting(bool value) {m_URLProtocol = value;}
+		void setOtherRsaKeySetting(bool value) {m_otherRsaKey = value;}
+
+		bool getShowMessageBoxSetting() const {return m_showMessageBox;}
+		bool getChangeTitleSetting() const {return m_changeTitle;}
+		bool getShowToolTipsSetting() const {return m_showToolTips;}
+		bool getURLProtocolSetting() const {return m_URLProtocol;}
+		bool getOtherRsaKeySetting() const {return m_otherRsaKey;}
+
 	protected:
-		bool useOtherRSA, checkFromList, showMessageBox, changeTitleCmdLine, supportForOTServList, showToolTips;
+		bool checkFromList;
+		bool m_showMessageBox;
+		bool m_changeTitle;
+		bool m_showToolTips;
+		bool m_URLProtocol;
+		bool m_otherRsaKey;
+		std::string m_customTitle;
+		std::string m_customRsaKey;
 };
 
 #endif

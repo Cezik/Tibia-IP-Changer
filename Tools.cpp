@@ -25,13 +25,7 @@ Tools::Tools()
 {
 	bSend = true;
 	bRecv = false;
-	useOtherRSA = false;
 	checkFromList = false;
-	setShowMessageBox(readBoolean("ShowMessageBox"));
-	setChangeTitleCmdLine(readBoolean("ChangeTibiaTitleCmdLine"));
-	setSupportForOTServList(readBoolean("SupportForOTServList"));
-	setShowToolTips(readBoolean("ShowToolTips"));
-	m_defaultLanguage = readString("Default Language");
 }
 
 Tools::~Tools()
@@ -46,34 +40,6 @@ bool Tools::fileExists(const char* fileName)
 {
 	std::ifstream file(getFilePath(fileName).c_str());
 	if(!file.fail())
-		return true;
-	return false;
-}
-
-/// <summary>
-/// Reads integer value from configuration file
-/// </summary>
-int32_t Tools::readInteger(const char* key)
-{
-	return GetPrivateProfileInt(SECTION, key, -1, getFilePath(CONFIG_FILE).c_str());
-}
-
-/// <summary>
-/// Reads string value from configuration file
-/// </summary>
-std::string Tools::readString(const char* key)
-{
-	char buffer[4096];
-	GetPrivateProfileString(SECTION, key, "", buffer, sizeof(buffer), getFilePath(CONFIG_FILE).c_str());
-	return buffer;
-}
-
-/// <summary>
-/// Reads boolean value from configuration file
-/// </summary>
-bool Tools::readBoolean(const char* key)
-{
-	if(readInteger(key) > 0)
 		return true;
 	return false;
 }
@@ -495,8 +461,8 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 					const uint16_t loginServers = (*it).loginServers;
 					if(rsaAddr != 0x00)
 					{
-						if(getUseOtherRSA())
-							setRSA(procHandle, rsaAddr, rsaKey.c_str());
+						if(getOtherRsaKeySetting())
+							setRSA(procHandle, rsaAddr, getCustomRsaKey().c_str());
 						else
 							setRSA(procHandle, rsaAddr, OTSERV_RSA_KEY);
 					}
@@ -504,7 +470,7 @@ bool Tools::setNewConnection(const char* newIP, uint16_t newPort, bool changeTit
 					{
 						if(changeTitle)
 						{
-							std::string getCustomTibiaText = readString("CustomTibiaTitle");
+							std::string getCustomTibiaText = getCustomTitle();
 							replaceString(getCustomTibiaText, "$protocol$", clientVersion);
 							replaceString(getCustomTibiaText, "$ipaddress$", newIP);
 							char newPort2[10];
@@ -582,6 +548,22 @@ bool Tools::readXMLInteger(xmlNodePtr node, const char* tag, int& value)
 	}
 
 	return false;
+}
+
+/// <summary>
+/// Reads string content from *.xml file
+/// </summary>
+bool Tools::readXMLContentString(xmlNodePtr node, std::string& value)
+{
+	char* nodeValue = (char*)xmlNodeGetContent(node);
+	if(!nodeValue)
+		return false;
+
+	if(!utf8ToLatin1(nodeValue, value))
+		value = nodeValue;
+
+	xmlFree(nodeValue);
+	return true;
 }
 
 /// <summary>
@@ -875,5 +857,49 @@ bool Tools::setLanguage(const char* languageName)
 		}
 	}
 
+	return true;
+}
+
+bool Tools::loadSettingsFromXML()
+{
+	xmlDocPtr doc = xmlParseFile(getFilePath(CONFIG_FILE).c_str());
+	if(!doc)
+		return false;
+
+	xmlNodePtr root, p, childNode;
+	root = xmlDocGetRootElement(doc);
+	if(xmlStrcmp(root->name,(const xmlChar*)SECTION) != 0)
+	{
+		xmlFreeDoc(doc);
+		return false;
+	}
+
+	p = root->children;
+	do
+	{
+		std::string strVal;
+		int intVal;
+		if(xmlStrcmp(p->name, (const xmlChar*)"Settings") == 0)
+		{
+			if(readXMLString(p, "Language", strVal))
+				m_defaultLanguage = strVal;
+			if(readXMLInteger(p, "OtherRsaKey", intVal))
+				m_otherRsaKey = intVal;
+			if(readXMLInteger(p, "MessageBox", intVal))
+				m_showMessageBox = intVal;
+			if(readXMLInteger(p, "ChangeTitle", intVal))
+				m_changeTitle = intVal;
+			if(readXMLInteger(p, "ShowToolTips", intVal))
+				m_showToolTips = intVal;
+			if(readXMLInteger(p, "URLProtocol", intVal))
+				m_URLProtocol = intVal;
+			if(readXMLString(p, "CustomTitle", strVal))
+				m_customTitle = strVal;
+			if(readXMLString(p, "RSA_Key", strVal))
+				m_customRsaKey = strVal;
+		}
+		p = p->next;
+	}while(p);
+	xmlFreeDoc(doc);
 	return true;
 }

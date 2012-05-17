@@ -31,7 +31,7 @@ void WinGUI::createToolTip(HWND hParent, const char* tipText, HICON iconID, cons
 	if(!hParent || tipText == NULL)
 		return;
 
-	if(!tools.getShowToolTips())
+	if(!tools.getShowToolTipsSetting())
 		return;
 
 	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL, WS_POPUP | TTS_BALLOON | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hParent, NULL, hInst, NULL);
