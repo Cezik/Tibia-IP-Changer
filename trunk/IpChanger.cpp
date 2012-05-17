@@ -29,6 +29,57 @@ Tools tools;
 
 bool showRealWindow = false;
 
+bool saveSettings()
+{
+	xmlNodePtr root, listNode;
+	xmlDocPtr doc = xmlNewDoc((const xmlChar*)"1.0");
+	doc->children = xmlNewDocNode(doc, NULL, (const xmlChar*)SECTION, NULL);
+	root = doc->children;
+	listNode = xmlNewNode(NULL,(const xmlChar*)"Settings");
+	xmlSetProp(listNode, (const xmlChar*)"Language", (const xmlChar*)tools.m_defaultLanguage.c_str());
+
+	if(tools.getOtherRsaKeySetting())
+		xmlSetProp(listNode, (const xmlChar*)"OtherRsaKey", (const xmlChar*)"1");
+	else
+		xmlSetProp(listNode, (const xmlChar*)"OtherRsaKey", (const xmlChar*)"0");
+
+	if(tools.getShowMessageBoxSetting())
+		xmlSetProp(listNode, (const xmlChar*)"MessageBox", (const xmlChar*)"1");
+	else
+		xmlSetProp(listNode, (const xmlChar*)"MessageBox", (const xmlChar*)"0");
+
+	if(tools.getChangeTitleSetting())
+		xmlSetProp(listNode, (const xmlChar*)"ChangeTitle", (const xmlChar*)"1");
+	else
+		xmlSetProp(listNode, (const xmlChar*)"ChangeTitle", (const xmlChar*)"0");
+
+	if(tools.getShowToolTipsSetting())
+		xmlSetProp(listNode, (const xmlChar*)"ShowToolTips", (const xmlChar*)"1");
+	else
+		xmlSetProp(listNode, (const xmlChar*)"ShowToolTips", (const xmlChar*)"0");
+
+	if(tools.getURLProtocolSetting())
+		xmlSetProp(listNode, (const xmlChar*)"URLProtocol", (const xmlChar*)"1");
+	else
+		xmlSetProp(listNode, (const xmlChar*)"URLProtocol", (const xmlChar*)"0");
+
+	xmlSetProp(listNode, (const xmlChar*) "CustomTitle", (const xmlChar*)tools.getCustomTitle().c_str());
+
+	xmlSetProp(listNode, (const xmlChar*)"RSA_Key", (const xmlChar*)tools.getCustomRsaKey().c_str());
+	xmlAddChild(root, listNode);
+
+	if(xmlSaveFile(tools.getFilePath(CONFIG_FILE).c_str(), doc))
+	{
+		xmlFreeDoc(doc);
+		return true;
+	}
+	else
+	{
+		xmlFreeDoc(doc);
+		return false;
+	}
+}
+
 bool saveServerList()
 {
 	xmlNodePtr root, listNode;
@@ -42,8 +93,8 @@ bool saveServerList()
 		ListView_GetItemText(gui.hWndIpList, i, 1, cPort, sizeof(cPort));
 
 		listNode = xmlNewNode(NULL,(const xmlChar*)"Server");
-		xmlSetProp(listNode, (const xmlChar*) "IP", (const xmlChar*)cAddress);
-		xmlSetProp(listNode, (const xmlChar*) "Port", (const xmlChar*)cPort);
+		xmlSetProp(listNode, (const xmlChar*)"IP", (const xmlChar*)cAddress);
+		xmlSetProp(listNode, (const xmlChar*)"Port", (const xmlChar*)cPort);
 		xmlAddChild(root, listNode);
 	}
 
@@ -132,7 +183,8 @@ BOOL CALLBACK LanguageWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 					char languageName[25];
 					const int nIndex = SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_GETCURSEL, 0, 0);
 					SendDlgItemMessage(gui.languageWindow, ID_DLG_LANGUAGE_COMBO, CB_GETLBTEXT, nIndex, (LPARAM)languageName);
-					WritePrivateProfileString(SECTION, "Default Language", languageName, tools.getFilePath(CONFIG_FILE).c_str());
+					tools.m_defaultLanguage = languageName;
+					saveSettings();
 					gui.messageBox(MESSAGE_TYPE_INFO, NAME, "You've saved successfully language!\nPlease restart now %s", NAME);
 					showRealWindow = false;
 					SendMessage(gui.languageWindow, WM_DESTROY, 0, 0);
@@ -345,19 +397,17 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 		case WM_INITDIALOG:
 		{
-			tools.rsaKey = tools.readString("KeyRSA");
-			if(tools.rsaKey.empty())
+			if(tools.getCustomRsaKey().empty())
 				SetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, OTSERV_RSA_KEY);
 			else
-				SetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, tools.rsaKey.c_str());
+				SetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, tools.getCustomRsaKey().c_str());
 
-			std::string tibiaTitle = tools.readString("CustomTibiaTitle");
-			if(tibiaTitle.empty())
+			if(tools.getCustomTitle().empty())
 				SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, "Tibia");
 			else
-				SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, tibiaTitle.c_str());
+				SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, tools.getCustomTitle().c_str());
 
-			if(tools.getUseOtherRSA())
+			if(tools.getOtherRsaKeySetting())
 			{
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_RSA_USE_OTHER, BM_SETCHECK, BST_CHECKED, 0);
 				EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_EDIT), TRUE);
@@ -368,22 +418,22 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_EDIT), FALSE);
 			}
 
-			if(tools.getShowMessageBox())
+			if(tools.getShowMessageBoxSetting())
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE, BM_SETCHECK, BST_CHECKED, 0);
 			else
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE, BM_SETCHECK, BST_UNCHECKED, 0);
 
-			if(tools.getChangeTitleCmdLine())
+			if(tools.getChangeTitleSetting())
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_CHANGE_WINDOW_CMD_LINE, BM_SETCHECK, BST_CHECKED, 0);
 			else
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_CHANGE_WINDOW_CMD_LINE, BM_SETCHECK, BST_UNCHECKED, 0);
 
-			if(tools.getSupportForOTServList())
+			if(tools.getURLProtocolSetting())
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_OTSERV_SUPPORT, BM_SETCHECK, BST_CHECKED, 0);
 			else
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_OTSERV_SUPPORT, BM_SETCHECK, BST_UNCHECKED, 0);
 
-			if(tools.getShowToolTips())
+			if(tools.getShowToolTipsSetting())
 			{
 				SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_TOOLTIPS, BM_SETCHECK, BST_CHECKED, 0);
 				gui.createToolTip(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_DEFAULT), tools.languageTable[49], (HICON)gui.mainIcon, NAME);
@@ -423,20 +473,19 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				case ID_DLG_RSA_SAVE:
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_RSA_USE_OTHER, BM_GETCHECK, 0, 0))
 					{
-						char saveRsaKey[4096];
+						char saveRsaKey[8192];
 						GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, saveRsaKey, sizeof(saveRsaKey));
-
-						tools.rsaKey = saveRsaKey;
-						WritePrivateProfileString(SECTION, "KeyRSA", saveRsaKey, tools.getFilePath(CONFIG_FILE).c_str());
+						tools.setCustomRsaKey(saveRsaKey);
+						saveSettings();
 					}
 					break;
 
 				case ID_DLG_RSA_LOAD:
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_RSA_USE_OTHER, BM_GETCHECK, 0, 0))
 					{
-						tools.rsaKey = tools.readString("KeyRSA");
-						if(!tools.rsaKey.empty())
-							SetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, tools.rsaKey.c_str());
+						tools.loadSettingsFromXML();
+						if(!tools.getCustomRsaKey().empty())
+							SetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, tools.getCustomRsaKey().c_str());
 						else
 							gui.messageBox(MESSAGE_TYPE_ERROR, NAME, tools.languageTable[41]);
 					}
@@ -444,9 +493,9 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 				case ID_DLG_RSA_USE_THIS_ONE:
 				{
-					char saveRsaKey[4096];
+					char saveRsaKey[8192];
 					GetDlgItemText(gui.optionsWindow, ID_DLG_RSA_EDIT, saveRsaKey, sizeof(saveRsaKey));
-					tools.rsaKey = saveRsaKey;
+					tools.setCustomRsaKey(saveRsaKey);
 					break;
 				}
 
@@ -459,7 +508,7 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 							EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_USE_THIS_ONE), TRUE);
 							EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_SAVE), TRUE);
 							EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_LOAD), TRUE);
-							tools.setUseOtherRSA(true);
+							tools.setOtherRsaKeySetting(true);
 						}
 						else
 						{
@@ -467,18 +516,18 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 							EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_USE_THIS_ONE), FALSE);
 							EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_SAVE), FALSE);
 							EnableWindow(GetDlgItem(gui.optionsWindow, ID_DLG_RSA_LOAD), FALSE);
-							tools.setUseOtherRSA(false);
+							tools.setOtherRsaKeySetting(false);
 						}
 					}
 					break;
 
 				case ID_DLG_TITLE_LOAD:
 				{
-					std::string tibiaTitle = tools.readString("CustomTibiaTitle");
-					if(tibiaTitle.empty())
+					tools.loadSettingsFromXML();
+					if(tools.getCustomTitle().empty())
 						SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, "Tibia");
 					else
-						SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, tibiaTitle.c_str());
+						SetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, tools.getCustomTitle().c_str());
 					break;
 				}
 
@@ -486,57 +535,39 @@ BOOL CALLBACK OptionsWindow(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				{
 					char saveTibiaTitle[4096];
 					GetDlgItemText(gui.optionsWindow, ID_DLG_OPTIONS_EDIT_TITLE, saveTibiaTitle, sizeof(saveTibiaTitle));
-					WritePrivateProfileString(SECTION, "CustomTibiaTitle", saveTibiaTitle, tools.getFilePath(CONFIG_FILE).c_str());
+					tools.setCustomTitle(saveTibiaTitle);
+					saveSettings();
 					break;
 				}
 
 				case ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE_SAVE:
 				{
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE, BM_GETCHECK, 0, 0))
-					{
-						WritePrivateProfileString(SECTION, "ShowMessageBox", "1", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setShowMessageBox(true);
-					}
+						tools.setShowMessageBoxSetting(true);
 					else
-					{
-						WritePrivateProfileString(SECTION, "ShowMessageBox", "0", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setShowMessageBox(false);
-					}
+						tools.setShowMessageBoxSetting(false);
 
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_WINDOW_CMD_LINE, BM_GETCHECK, 0, 0))
-					{
-						WritePrivateProfileString(SECTION, "ChangeTibiaTitleCmdLine", "1", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setChangeTitleCmdLine(true);
-					}
+						tools.setChangeTitleSetting(true);
 					else
-					{
-						WritePrivateProfileString(SECTION, "ChangeTibiaTitleCmdLine", "0", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setChangeTitleCmdLine(false);
-					}
+						tools.setChangeTitleSetting(false);
 
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_OTSERV_SUPPORT, BM_GETCHECK, 0, 0))
 					{
-						WritePrivateProfileString(SECTION, "SupportForOTServList", "1", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setSupportForOTServList(true);
+						tools.setURLProtocolSetting(true);
 						tools.addSupportForOTServList();
 					}
 					else
 					{
-						WritePrivateProfileString(SECTION, "SupportForOTServList", "0", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setSupportForOTServList(false);
+						tools.setURLProtocolSetting(false);
 						SHDeleteKey(HKEY_CLASSES_ROOT, "OTSERV");
 					}
 
 					if(SendDlgItemMessage(gui.optionsWindow, ID_DLG_OPTIONS_SHOW_TOOLTIPS, BM_GETCHECK, 0, 0))
-					{
-						WritePrivateProfileString(SECTION, "ShowToolTips", "1", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setShowToolTips(true);
-					}
+						tools.setShowToolTipsSetting(true);
 					else
-					{
-						WritePrivateProfileString(SECTION, "ShowToolTips", "0", tools.getFilePath(CONFIG_FILE).c_str());
-						tools.setShowToolTips(false);
-					}
+						tools.setShowToolTipsSetting(false);
+					saveSettings();
 				}
 			}
 			break;
@@ -941,7 +972,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 				SetDlgItemText(hWnd, ID_DLG_IP, "127.0.0.1");
 			SetDlgItemText(hWnd, ID_DLG_PORT, "7171");
 
-			if(tools.getShowToolTips())
+			if(tools.getShowToolTipsSetting())
 			{
 				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_CHANGE_IP), tools.languageTable[44], (HICON)gui.mainIcon, NAME);
 				gui.createToolTip(GetDlgItem(gui.mainWindow, ID_DLG_SHOW_SERVER_INFO), tools.languageTable[45], (HICON)gui.mainIcon, NAME);
@@ -1022,7 +1053,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 							{
 								if(tools.setNewConnection(ipAddress, (uint16_t)atoi(port), true))
 								{
-									if(tools.getShowMessageBox())
+									if(tools.getShowMessageBoxSetting())
 										gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[37], ipAddress, port);
 								}
 							}
@@ -1030,7 +1061,7 @@ BOOL CALLBACK MainWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 							{
 								if(tools.setNewConnection(ipAddress, (uint16_t)atoi(port), false))
 								{
-									if(tools.getShowMessageBox())
+									if(tools.getShowMessageBoxSetting())
 										gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[37], ipAddress, port);
 								}
 							}
@@ -1093,6 +1124,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	iccex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	InitCommonControlsEx(&iccex);
 
+	if(!tools.loadSettingsFromXML())
+	{
+		gui.messageBox(MESSAGE_TYPE_FATAL_ERROR, NAME, "Could not load \"IPChanger.xml\" file!\nFile prodably doesn't exists!");
+		return 0;
+	}
+
 	if(!tools.loadLanguageStringsFromXML())
 	{
 		gui.messageBox(MESSAGE_TYPE_FATAL_ERROR, NAME, "Could not load \"Languages.xml\" file!\nFile prodably doesn't exists!");
@@ -1115,7 +1152,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return 0;
 	}
 
-	if(tools.getSupportForOTServList())
+	if(tools.getURLProtocolSetting())
 		tools.addSupportForOTServList();
 
 	int nArgs;
@@ -1130,9 +1167,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		if(!parseCommandLine(std::vector<std::string>(argList, argList + nArgs)))
 			return 0;
 
-		if(tools.setNewConnection(tools.cmdLineIP, (uint16_t)atoi(tools.cmdLinePort), tools.getChangeTitleCmdLine()))
+		if(tools.setNewConnection(tools.cmdLineIP, (uint16_t)atoi(tools.cmdLinePort), tools.getChangeTitleSetting()))
 		{
-			if(tools.getShowMessageBox())
+			if(tools.getShowMessageBoxSetting())
 			{
 				gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[37], tools.cmdLineIP, tools.cmdLinePort);
 			}
@@ -1154,9 +1191,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		if(pPort != NULL && pIp != NULL && pClient != NULL)
 		{
-			if(tools.setNewConnection(pIp, (uint16_t)atoi(pPort), tools.getChangeTitleCmdLine()))
+			if(tools.setNewConnection(pIp, (uint16_t)atoi(pPort), tools.getChangeTitleSetting()))
 			{
-				if(tools.getShowMessageBox())
+				if(tools.getShowMessageBoxSetting())
 					gui.messageBox(MESSAGE_TYPE_INFO, NAME, tools.languageTable[40], pIp, pPort, pClient);
 			}
 			return 0;
