@@ -32,6 +32,7 @@
 #include <libxml/parser.h>
 #include <Tlhelp32.h>
 #include <list>
+#include <Wininet.h>
 
 #include "resource.h"
 #include "IpChanger.h"
@@ -108,7 +109,6 @@ class Tools
 		bool utf8ToLatin1(char* intext, std::string& outtext);
 		bool readXMLString(xmlNodePtr node, const char* tag, std::string& value);
 		bool readXMLInteger(xmlNodePtr node, const char* tag, int& value);
-		bool readXMLContentString(xmlNodePtr node, std::string& value);
 
 		bool loadFromXmlIpList();
 		bool setLanguage(const char* languageName);
