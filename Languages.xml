@@ -72,7 +72,7 @@
 		<String ID="69" Value="Support dla OTServlist.org"/>
 		<String ID="70" Value="Pokazuj okna z informacjami"/>
 		<String ID="71" Value="Aktualizacja"/>
-		<String ID="72" Value="Adresy zosta#322;y zaktualizowane!\nProsz#281; uruchomi#263; program ponownie."/>
+		<String ID="72" Value="Adresy zosta#322;y zaktualizowane!"/>
 		<String ID="73" Value="Nie mo#380;na zapisa#263; zaktualizowanych adres#243;w!"/>
 		<String ID="74" Value="Zmie#324; j#281;zyk"/>
 	</Language>
@@ -148,7 +148,7 @@
 		<String ID="69" Value="Support for OTServlist.org"/>
 		<String ID="70" Value="Show information windows"/>
 		<String ID="71" Value="Update"/>
-		<String ID="72" Value="Addresses has been updated!\nPlease restart program."/>
+		<String ID="72" Value="Addresses has been updated!"/>
 		<String ID="73" Value="Couldn't save updated addresses!"/>
 		<String ID="74" Value="Change language"/>
 	</Language>
@@ -224,7 +224,7 @@
 		<String ID="69" Value="Support f#246;r OTServlist.org"/>
 		<String ID="70" Value="Visa informations-f#246;nster"/>
 		<String ID="71" Value="Uppdatera"/>
-		<String ID="72" Value="Adresser har uppdaterats!\nVar god starta om programmet."/>
+		<String ID="72" Value="Adresser har uppdaterats!"/>
 		<String ID="73" Value="Kunde inte spara uppdaterade adresser!"/>
 		<String ID="74" Value="Byt spr#229;k"/>
 	</Language>

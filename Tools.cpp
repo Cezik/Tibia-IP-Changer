@@ -551,22 +551,6 @@ bool Tools::readXMLInteger(xmlNodePtr node, const char* tag, int& value)
 }
 
 /// <summary>
-/// Reads string content from *.xml file
-/// </summary>
-bool Tools::readXMLContentString(xmlNodePtr node, std::string& value)
-{
-	char* nodeValue = (char*)xmlNodeGetContent(node);
-	if(!nodeValue)
-		return false;
-
-	if(!utf8ToLatin1(nodeValue, value))
-		value = nodeValue;
-
-	xmlFree(nodeValue);
-	return true;
-}
-
-/// <summary>
 /// Loading servers from *.xml file
 /// </summary>
 bool Tools::loadFromXmlIpList()
@@ -694,7 +678,34 @@ bool Tools::loadFromXmlAddresses()
 /// </summary>
 bool Tools::updateXmlAddresses()
 {
-	/* TODO (Czepek#1#): Write 100% working function to update addresses */
+	DWORD dwSize;
+	char szHead[] = "Accept: */*\r\n\r\n";
+	void* szTemp[25];
+	HINTERNET hConnect, hOpen;
+	FILE* pFile;
+
+    hOpen = InternetOpen("RiSing", 0, NULL, NULL, 0);
+	if(!(hConnect = InternetOpenUrl(hOpen, ADDRESSES_CHECK, szHead, lstrlen(szHead), INTERNET_FLAG_DONT_CACHE, 0)))
+         return false;
+
+	if(!(pFile = fopen(ADDRESSES_FILE, "wb")))
+		return false;
+	do
+	{
+		if(!InternetReadFile(hConnect, szTemp, 50, &dwSize))
+		{
+			fclose(pFile);
+			return false;
+		}
+		if(!dwSize)
+			break;
+		else
+			fwrite(szTemp, sizeof(char), dwSize, pFile);
+	}while(true);
+	fflush(pFile);
+	fclose(pFile);
+	if(loadFromXmlAddresses())
+		return true;
 	return false;
 }
 
