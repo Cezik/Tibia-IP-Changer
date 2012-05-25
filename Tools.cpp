@@ -863,6 +863,15 @@ bool Tools::setLanguage(const char* languageName)
 				replaceString(str, "#214;", "Ö");
 				replaceString(str, "#246;", "ö");
 
+				replaceString(str, "#193;", "Á");
+				replaceString(str, "#225;", "á");
+
+				replaceString(str, "#199;", "Ç");
+				replaceString(str, "#231;", "ç");
+
+				replaceString(str, "#194;", "Â");
+				replaceString(str, "#226;", "â");
+
 				strcpy(languageTable[i], str.c_str());
 			}
 		}
