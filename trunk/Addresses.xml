@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <OTFans>
+	<Protocol Version="971" rsaAddr="0x725EA8" ipAddr="0x7B4538" loginServers="10"/>
 	<Protocol Version="970" rsaAddr="0x724EC0" ipAddr="0x7B34F8" loginServers="10"/>
 	<Protocol Version="963" rsaAddr="0x724EC0" ipAddr="0x7B34F8" loginServers="10"/>
 	<Protocol Version="961" rsaAddr="0x720D40" ipAddr="0x7B06D0" loginServers="10"/>
